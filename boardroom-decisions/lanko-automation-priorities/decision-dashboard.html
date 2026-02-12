@@ -77,6 +77,38 @@ body {
   font-style: italic;
 }
 
+/* --- LANGUAGE TOGGLE --- */
+.lang-toggle {
+  display: inline-flex;
+  gap: 0;
+  margin-top: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--gold);
+  position: relative;
+  z-index: 10;
+}
+.lang-btn {
+  padding: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--gray);
+  transition: background 0.25s, color 0.25s;
+  font-family: inherit;
+}
+.lang-btn.active {
+  background: var(--gold);
+  color: var(--navy);
+}
+.lang-btn:not(.active):hover {
+  background: rgba(232,185,49,0.15);
+  color: var(--gold);
+}
+
 /* --- CONTAINER --- */
 .container {
   max-width: 1280px;
@@ -701,27 +733,31 @@ body {
 
 <!-- ============ HEADER ============ -->
 <header class="header">
-  <div class="header-date">February 12, 2026</div>
-  <h1><span>Lanko</span> Automation Strategy &mdash; Boardroom Decision Dashboard</h1>
-  <p class="header-subtitle">Which automation projects should Lanko prioritize?</p>
+  <div class="header-date" data-en="February 12, 2026" data-pl="12 lutego 2026">February 12, 2026</div>
+  <h1><span>Lanko</span> <span data-en="Automation Strategy &mdash; Boardroom Decision Dashboard" data-pl="Strategia Automatyzacji &mdash; Panel Decyzyjny Rady Doradczej">Automation Strategy &mdash; Boardroom Decision Dashboard</span></h1>
+  <p class="header-subtitle" data-en="Which automation projects should Lanko prioritize?" data-pl="Kt&oacute;re projekty automatyzacji Lanko powinno priorytetyzowa&cacute;?">Which automation projects should Lanko prioritize?</p>
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-en" onclick="switchLang('en')">EN</button>
+    <button class="lang-btn" id="btn-pl" onclick="switchLang('pl')">PL</button>
+  </div>
 </header>
 
 <div class="container">
 
 <!-- ============ CONSENSUS METER ============ -->
-<h2 class="section-title">Consensus Meter</h2>
-<div class="consensus-section">
-  <div class="consensus-label">Overall Board Agreement</div>
-  <div class="consensus-result">&#9679; Strong Majority</div>
+<h2 class="section-title" data-en="Consensus Meter" data-pl="Miernik Konsensusu">Consensus Meter</h2>
+<div class="consensus-section" id="consensusSection">
+  <div class="consensus-label" data-en="Overall Board Agreement" data-pl="Og&oacute;lna Zgodno&sacute;&cacute; Rady">Overall Board Agreement</div>
+  <div class="consensus-result" data-en="&#9679; Strong Majority" data-pl="&#9679; Silna Wi&eogon;kszo&sacute;&cacute;">&#9679; Strong Majority</div>
   <div class="consensus-bar-wrapper">
     <div class="consensus-bar-item">
-      <label>Project B (ERP/MES) &mdash; Priority #1</label>
+      <label data-en="Project B (ERP/MES) &mdash; Priority #1" data-pl="Projekt B (ERP/MES) &mdash; Priorytet #1">Project B (ERP/MES) &mdash; Priority #1</label>
       <div class="bar-track">
         <div class="bar-fill green" style="width:100%">7 / 7</div>
       </div>
     </div>
     <div class="consensus-bar-item">
-      <label>Project A (AI Quoting) &mdash; Priority #2</label>
+      <label data-en="Project A (AI Quoting) &mdash; Priority #2" data-pl="Projekt A (AI Quoting) &mdash; Priorytet #2">Project A (AI Quoting) &mdash; Priority #2</label>
       <div class="bar-track">
         <div class="bar-fill gold" style="width:85.7%">6 / 7</div>
       </div>
@@ -739,145 +775,102 @@ body {
       </div>
     </div>
   </div>
-  <div class="consensus-details">
-    All 7 advisors agree on <strong>B first</strong>. 6 of 7 place <strong>A second</strong>.
-    Project D gained traction during Round 2 debate. Project C remains conditional/deferred.
-  </div>
+  <div class="consensus-details" id="consensusDetails"></div>
 </div>
 
 <!-- ============ ADVISOR CARDS ============ -->
-<h2 class="section-title">Advisory Board &mdash; Votes &amp; Positions</h2>
+<h2 class="section-title" data-en="Advisory Board &mdash; Votes &amp; Positions" data-pl="Rada Doradcza &mdash; G&lstrok;osy i Stanowiska">Advisory Board &mdash; Votes &amp; Positions</h2>
 <div class="advisor-grid" id="advisorGrid"></div>
 
 <!-- ============ VOTE CHANGE VISUALIZATION ============ -->
-<h2 class="section-title">Vote Shift Visualization &mdash; Round 1 vs Final</h2>
+<h2 class="section-title" data-en="Vote Shift Visualization &mdash; Round 1 vs Final" data-pl="Wizualizacja Zmian G&lstrok;os&oacute;w &mdash; Runda 1 vs Fina&lstrok;">Vote Shift Visualization &mdash; Round 1 vs Final</h2>
 <div class="vote-change-grid" id="voteChangeGrid"></div>
 
 <!-- ============ INTERACTIVE SLIDERS ============ -->
-<h2 class="section-title">Interactive Financial Projections &mdash; Project A (AI Quoting)</h2>
+<h2 class="section-title" data-en="Interactive Financial Projections &mdash; Project A (AI Quoting)" data-pl="Interaktywne Projekcje Finansowe &mdash; Projekt A">Interactive Financial Projections &mdash; Project A (AI Quoting)</h2>
 <div class="sliders-section">
-  <div class="sliders-grid">
+  <div class="sliders-grid" id="slidersGrid">
     <div class="slider-group">
-      <label>Monthly Internet Leads <span class="slider-value" id="val-leads">200</span></label>
+      <label><span data-en="Monthly Internet Leads" data-pl="Miesi&eogon;czne leady internetowe">Monthly Internet Leads</span> <span class="slider-value" id="val-leads">200</span></label>
       <input type="range" id="slider-leads" min="50" max="500" value="200" step="10">
     </div>
     <div class="slider-group">
-      <label>Current Conversion Rate (%) <span class="slider-value" id="val-conv-current">10</span></label>
+      <label><span data-en="Current Conversion Rate (%)" data-pl="Obecny wsp&oacute;&lstrok;czynnik konwersji (%)">Current Conversion Rate (%)</span> <span class="slider-value" id="val-conv-current">10</span></label>
       <input type="range" id="slider-conv-current" min="1" max="20" value="10" step="0.5">
     </div>
     <div class="slider-group">
-      <label>Projected Conversion Rate with AI (%) <span class="slider-value" id="val-conv-ai">20</span></label>
+      <label><span data-en="Projected Conversion Rate with AI (%)" data-pl="Prognozowany wsp&oacute;&lstrok;czynnik konwersji z AI (%)">Projected Conversion Rate with AI (%)</span> <span class="slider-value" id="val-conv-ai">20</span></label>
       <input type="range" id="slider-conv-ai" min="10" max="40" value="20" step="0.5">
     </div>
     <div class="slider-group">
-      <label>Average Order Value (PLN) <span class="slider-value" id="val-aov">20,000</span></label>
+      <label><span data-en="Average Order Value (PLN)" data-pl="&Sacute;rednia warto&sacute;&cacute; zam&oacute;wienia (PLN)">Average Order Value (PLN)</span> <span class="slider-value" id="val-aov">20,000</span></label>
       <input type="range" id="slider-aov" min="5000" max="50000" value="20000" step="500">
     </div>
     <div class="slider-group">
-      <label>Gemini API Cost per Quote (USD) <span class="slider-value" id="val-api">2.00</span></label>
+      <label><span data-en="Gemini API Cost per Quote (USD)" data-pl="Koszt Gemini API za wycen&eogon; (USD)">Gemini API Cost per Quote (USD)</span> <span class="slider-value" id="val-api">2.00</span></label>
       <input type="range" id="slider-api" min="0.5" max="5" value="2" step="0.1">
     </div>
     <div class="slider-group">
-      <label>Number of Salespeople <span class="slider-value" id="val-people">10</span></label>
+      <label><span data-en="Number of Salespeople" data-pl="Liczba handlowc&oacute;w">Number of Salespeople</span> <span class="slider-value" id="val-people">10</span></label>
       <input type="range" id="slider-people" min="5" max="30" value="10" step="1">
     </div>
     <div class="slider-group">
-      <label>Hours Saved / Salesperson / Week <span class="slider-value" id="val-hours">8</span></label>
+      <label><span data-en="Hours Saved / Salesperson / Week" data-pl="Zaoszcz&eogon;dzone godziny / handlowiec / tydzie&nacute;">Hours Saved / Salesperson / Week</span> <span class="slider-value" id="val-hours">8</span></label>
       <input type="range" id="slider-hours" min="2" max="20" value="8" step="1">
     </div>
   </div>
 
-  <div class="outputs-grid">
+  <div class="outputs-grid" id="outputsGrid">
     <div class="output-card">
-      <div class="label">Current Monthly Revenue</div>
+      <div class="label" data-en="Current Monthly Revenue" data-pl="Obecny miesi&eogon;czny przych&oacute;d">Current Monthly Revenue</div>
       <div class="value" id="out-current-rev">400,000</div>
-      <span class="unit">PLN / month</span>
+      <span class="unit" data-en="PLN / month" data-pl="PLN / miesi&aogon;c">PLN / month</span>
     </div>
     <div class="output-card">
-      <div class="label">Projected Monthly Revenue</div>
+      <div class="label" data-en="Projected Monthly Revenue" data-pl="Prognozowany miesi&eogon;czny przych&oacute;d">Projected Monthly Revenue</div>
       <div class="value" id="out-projected-rev">800,000</div>
-      <span class="unit">PLN / month</span>
+      <span class="unit" data-en="PLN / month" data-pl="PLN / miesi&aogon;c">PLN / month</span>
     </div>
     <div class="output-card">
-      <div class="label">Revenue Uplift / Month</div>
+      <div class="label" data-en="Revenue Uplift / Month" data-pl="Wzrost przychodu / miesi&aogon;c">Revenue Uplift / Month</div>
       <div class="value positive" id="out-uplift-month">400,000</div>
-      <span class="unit">PLN / month</span>
+      <span class="unit" data-en="PLN / month" data-pl="PLN / miesi&aogon;c">PLN / month</span>
     </div>
     <div class="output-card">
-      <div class="label">Revenue Uplift / Year</div>
+      <div class="label" data-en="Revenue Uplift / Year" data-pl="Wzrost przychodu / rok">Revenue Uplift / Year</div>
       <div class="value positive" id="out-uplift-year">4,800,000</div>
-      <span class="unit">PLN / year</span>
+      <span class="unit" data-en="PLN / year" data-pl="PLN / rok">PLN / year</span>
     </div>
     <div class="output-card">
-      <div class="label">Monthly API Cost</div>
+      <div class="label" data-en="Monthly API Cost" data-pl="Miesi&eogon;czny koszt API">Monthly API Cost</div>
       <div class="value negative" id="out-api-cost">1,600</div>
-      <span class="unit">PLN / month</span>
+      <span class="unit" data-en="PLN / month" data-pl="PLN / miesi&aogon;c">PLN / month</span>
     </div>
     <div class="output-card">
-      <div class="label">Annual Net Benefit</div>
+      <div class="label" data-en="Annual Net Benefit" data-pl="Roczna korzy&sacute;&cacute; netto">Annual Net Benefit</div>
       <div class="value positive" id="out-net-annual">4,780,800</div>
-      <span class="unit">PLN / year</span>
+      <span class="unit" data-en="PLN / year" data-pl="PLN / rok">PLN / year</span>
     </div>
     <div class="output-card">
       <div class="label">ROI</div>
       <div class="value positive" id="out-roi">24,900%</div>
-      <span class="unit">of API cost</span>
+      <span class="unit" data-en="of API cost" data-pl="kosztu API">of API cost</span>
     </div>
   </div>
 </div>
 
 <!-- ============ COLLAPSIBLE ADVISOR DETAILS ============ -->
-<h2 class="section-title">Advisor Arguments &mdash; Round 1 &amp; Round 2</h2>
+<h2 class="section-title" data-en="Advisor Arguments &mdash; Round 1 &amp; Round 2" data-pl="Argumenty Doradc&oacute;w &mdash; Runda 1 i Runda 2">Advisor Arguments &mdash; Round 1 &amp; Round 2</h2>
 <div class="collapsible-section" id="collapsibleSection"></div>
 
 <!-- ============ KEY TENSIONS ============ -->
-<h2 class="section-title">Key Tensions</h2>
-<div class="tensions-grid">
-  <div class="tension-card">
-    <div class="tension-number">1</div>
-    <h4>Speed vs. Organizational Readiness</h4>
-    <div class="sides">
-      <span class="side-a">Musk / Huang</span>
-      <span class="vs">vs.</span>
-      <span class="side-b">Barra / Cook</span>
-    </div>
-    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
-      Musk and Huang push for aggressive parallel execution and rapid AI deployment,
-      while Barra and Cook emphasize phased rollouts tied to workforce training and process maturity.
-    </p>
-  </div>
-  <div class="tension-card">
-    <div class="tension-number">2</div>
-    <h4>Product Ambition vs. Operational Focus</h4>
-    <div class="sides">
-      <span class="side-a">Huang / Musk / Benioff</span>
-      <span class="vs">vs.</span>
-      <span class="side-b">Taleb / Cook</span>
-    </div>
-    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
-      The tech visionaries want to leapfrog with AI-native products (configurator, customer-facing AI),
-      while the pragmatists insist on fixing core operations (ERP, data quality) before layering complexity.
-    </p>
-  </div>
-  <div class="tension-card">
-    <div class="tension-number">3</div>
-    <h4>API Dependency vs. Speed to Market</h4>
-    <div class="sides">
-      <span class="side-a">Taleb</span>
-      <span class="vs">vs.</span>
-      <span class="side-b">Rest of Board</span>
-    </div>
-    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
-      Taleb warns about vendor lock-in and pricing risk with Google Gemini API dependency.
-      The majority accepts the trade-off for speed, with the caveat that modular architecture allows future migration.
-    </p>
-  </div>
-</div>
+<h2 class="section-title" data-en="Key Tensions" data-pl="Kluczowe Napi&eogon;cia">Key Tensions</h2>
+<div class="tensions-grid" id="tensionsGrid"></div>
 
 <!-- ============ TIMELINE ============ -->
-<h2 class="section-title">Recommended Sequence Timeline</h2>
+<h2 class="section-title" data-en="Recommended Sequence Timeline" data-pl="Rekomendowana O&sacute; Czasu">Recommended Sequence Timeline</h2>
 <div class="timeline-section">
-  <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.5rem;">Scroll horizontally on smaller screens.</p>
+  <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.5rem;" data-en="Scroll horizontally on smaller screens." data-pl="Przewijaj poziomo na mniejszych ekranach.">Scroll horizontally on smaller screens.</p>
   <div class="timeline-track">
     <div class="timeline-line"></div>
     <div class="timeline-months">
@@ -885,38 +878,68 @@ body {
       <span>M6</span><span>M7</span><span>M8</span><span>M9</span><span>M10</span>
       <span>M11</span><span>M12</span>
     </div>
-    <div class="tl-block b">B: ERP/MES<br>Core</div>
-    <div class="tl-block d-narrow">D: Data (narrow)</div>
-    <div class="tl-block a">A: AI Quoting Tool (internal)</div>
-    <div class="tl-block crm">Basic CRM</div>
-    <div class="tl-block c">C: Config<br>(conditional)</div>
+    <div class="tl-block b" data-en="B: ERP/MES<br>Core" data-pl="B: Rdze&nacute; ERP/MES">B: ERP/MES<br>Core</div>
+    <div class="tl-block d-narrow" data-en="D: Data (narrow)" data-pl="D: Dane (w&aogon;ski zakres)">D: Data (narrow)</div>
+    <div class="tl-block a" data-en="A: AI Quoting Tool (internal)" data-pl="A: Narz&eogon;dzie AI Wycen (wewn&eogon;trzne)">A: AI Quoting Tool (internal)</div>
+    <div class="tl-block crm" data-en="Basic CRM" data-pl="Podstawowy CRM">Basic CRM</div>
+    <div class="tl-block c" data-en="C: Config<br>(conditional)" data-pl="C: Konfig.<br>(warunkowy)">C: Config<br>(conditional)</div>
     <div class="tl-label-row">
       <span class="tl-legend"><span class="tl-legend-dot" style="background:#2ecc71"></span> B: ERP/MES</span>
       <span class="tl-legend"><span class="tl-legend-dot" style="background:#3498db"></span> D: Data/Analytics</span>
       <span class="tl-legend"><span class="tl-legend-dot" style="background:var(--gold)"></span> A: AI Quoting</span>
-      <span class="tl-legend"><span class="tl-legend-dot" style="background:#9b59b6"></span> Basic CRM</span>
-      <span class="tl-legend"><span class="tl-legend-dot" style="background:#95a5a6"></span> C: Configurator</span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#9b59b6"></span> <span data-en="Basic CRM" data-pl="Podstawowy CRM">Basic CRM</span></span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#95a5a6"></span> <span data-en="C: Configurator" data-pl="C: Konfigurator">C: Configurator</span></span>
     </div>
   </div>
 </div>
 
 </div><!-- /container -->
 
-<footer class="footer">
+<footer class="footer" data-en="Lanko Automation Strategy &mdash; Boardroom Simulation &mdash; Generated February 12, 2026" data-pl="Strategia Automatyzacji Lanko &mdash; Symulacja Rady &mdash; Wygenerowano 12 lutego 2026">
   Lanko Automation Strategy &mdash; Boardroom Simulation &mdash; Generated February 12, 2026
 </footer>
 
 <script>
 // ============================
-// ADVISOR DATA
+// LANGUAGE SYSTEM
+// ============================
+let currentLang = 'en';
+
+const T = {
+  // Consensus details
+  consensusDetails: {
+    en: 'All 7 advisors agree on <strong>B first</strong>. 6 of 7 place <strong>A second</strong>. Project D gained traction during Round 2 debate. Project C remains conditional/deferred.',
+    pl: 'Wszyscy 7 doradc\u00f3w zgadza si\u0119 co do <strong>B na pierwszym miejscu</strong>. 6 z 7 stawia <strong>A na drugim</strong>. Projekt D zyska\u0142 poparcie podczas debaty Rundy 2. Projekt C pozostaje warunkowy/odroczony.'
+  },
+  // Vote section labels
+  round1Votes: { en: 'Round 1 Votes', pl: 'G\u0142osy Rundy 1' },
+  finalVotes: { en: 'Final Votes', pl: 'G\u0142osy Fina\u0142owe' },
+  confidence: { en: 'Confidence', pl: 'Pewno\u015b\u0107' },
+  biggestShift: { en: 'BIGGEST SHIFT:', pl: 'NAJWI\u0118KSZA ZMIANA:' },
+  // Round labels in collapsibles
+  round1Argument: { en: 'Round 1 Argument', pl: 'Argument Rundy 1' },
+  round2Rebuttal: { en: 'Round 2 Rebuttal', pl: 'Replika Rundy 2' },
+  // Vote change labels
+  round1: { en: 'Round 1', pl: 'Runda 1' },
+  final: { en: 'Final', pl: 'Fina\u0142' },
+  noShift: { en: 'No shift', pl: 'Bez zmiany' },
+  // Tension labels
+  vs: { en: 'vs.', pl: 'vs.' }
+};
+
+// ============================
+// ADVISOR DATA (bilingual)
 // ============================
 const advisors = [
   {
     name: "Tim Cook",
     initials: "TC",
     org: "Apple CEO",
-    role: "Operations Expert",
-    personality: "Methodical operator; supply-chain discipline above all.",
+    role: { en: "Operations Expert", pl: "Ekspert ds. Operacji" },
+    personality: {
+      en: "Methodical operator; supply-chain discipline above all.",
+      pl: "Metodyczny operator; dyscyplina \u0142a\u0144cucha dostaw ponad wszystko."
+    },
     color: "#5B7FFF",
     r1: [
       { proj: "B", vote: "yes" },
@@ -930,19 +953,31 @@ const advisors = [
       { proj: "A", vote: "cond" },
       { proj: "C", vote: "cond" }
     ],
-    mindChanged: "Moved D earlier; embedded CRM into B scope.",
+    mindChanged: {
+      en: "Moved D earlier; embedded CRM into B scope.",
+      pl: "Przesun\u0105\u0142 D wcze\u015bniej; wbudowa\u0142 CRM w zakres B."
+    },
     isBigShift: false,
     confFrom: "High", confTo: "High", confDir: "same",
-    r1Summary: "Cook argued B (ERP/MES) must come first as the operational backbone. Without reliable data plumbing, AI tools will produce garbage. He was cautious on A, wanting to see ERP deliver clean data before layering AI quoting on top.",
-    r2Summary: "Accepted D should start in parallel with B to begin data cleanup immediately. Proposed embedding basic CRM functionality inside the ERP rollout rather than treating it as a separate project. Remained cautious on C."
+    r1Summary: {
+      en: "Cook argued B (ERP/MES) must come first as the operational backbone. Without reliable data plumbing, AI tools will produce garbage. He was cautious on A, wanting to see ERP deliver clean data before layering AI quoting on top.",
+      pl: "Cook argumentowa\u0142, \u017ce B (ERP/MES) musi by\u0107 pierwszy jako kr\u0119gos\u0142up operacyjny. Bez niezawodnej infrastruktury danych, narz\u0119dzia AI b\u0119d\u0105 produkowa\u0107 \u015bmieci. By\u0142 ostro\u017cny wobec A, chc\u0105c zobaczy\u0107 czyste dane z ERP zanim na\u0142o\u017cy si\u0119 wycen\u0119 AI."
+    },
+    r2Summary: {
+      en: "Accepted D should start in parallel with B to begin data cleanup immediately. Proposed embedding basic CRM functionality inside the ERP rollout rather than treating it as a separate project. Remained cautious on C.",
+      pl: "Przyj\u0105\u0142, \u017ce D powinno ruszy\u0107 r\u00f3wnolegle z B, aby natychmiast rozpocz\u0105\u0107 czyszczenie danych. Zaproponowa\u0142 wbudowanie podstawowej funkcjonalno\u015bci CRM w ramach wdro\u017cenia ERP. Pozosta\u0142 ostro\u017cny wobec C."
+    }
   },
   {
     name: "Marc Benioff",
     initials: "MB",
     org: "Salesforce",
-    role: "SaaS Pioneer",
+    role: { en: "SaaS Pioneer", pl: "Pionier SaaS" },
     color: "#00A1E0",
-    personality: "Customer-centric SaaS evangelist; CRM is oxygen.",
+    personality: {
+      en: "Customer-centric SaaS evangelist; CRM is oxygen.",
+      pl: "Ewangelista SaaS zorientowany na klienta; CRM to tlen."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "A", vote: "yes" },
@@ -955,19 +990,31 @@ const advisors = [
       { proj: "D", vote: "special", label: "BG" },
       { proj: "C", vote: "cond" }
     ],
-    mindChanged: "B now clear #1 (was tied with A). D as background task.",
+    mindChanged: {
+      en: "B now clear #1 (was tied with A). D as background task.",
+      pl: "B teraz wyra\u017any #1 (by\u0142 remisowy z A). D jako zadanie w tle."
+    },
     isBigShift: false,
     confFrom: "High", confTo: "82%", confDir: "down",
-    r1Summary: "Benioff championed A and B equally, arguing that AI-powered quoting would be a competitive differentiator for Lanko's internet sales channel. He pushed for CRM integration early, seeing it as the connective tissue between sales and operations.",
-    r2Summary: "After hearing Cook and Barra, conceded B should clearly lead. Still passionate about A as close second. Accepted D as a background workstream. Slightly less confident as execution complexity became clearer."
+    r1Summary: {
+      en: "Benioff championed A and B equally, arguing that AI-powered quoting would be a competitive differentiator for Lanko's internet sales channel. He pushed for CRM integration early, seeing it as the connective tissue between sales and operations.",
+      pl: "Benioff r\u00f3wno promowa\u0142 A i B, argumentuj\u0105c, \u017ce wycena wspomagana AI b\u0119dzie wyr\u00f3\u017cnikiem konkurencyjnym dla kana\u0142u sprzeda\u017cy internetowej Lanko. Naciska\u0142 na wczesn\u0105 integracj\u0119 CRM."
+    },
+    r2Summary: {
+      en: "After hearing Cook and Barra, conceded B should clearly lead. Still passionate about A as close second. Accepted D as a background workstream. Slightly less confident as execution complexity became clearer.",
+      pl: "Po wys\u0142uchaniu Cooka i Barry, przyzna\u0142, \u017ce B powinno wyra\u017anie prowadzi\u0107. Wci\u0105\u017c pasjonat A jako bliskiego drugiego. Zaakceptowa\u0142 D jako drugoplanowe. Nieco mniej pewny."
+    }
   },
   {
     name: "Elon Musk",
     initials: "EM",
     org: "Tesla",
-    role: "Radical Thinker",
+    role: { en: "Radical Thinker", pl: "Radykalny My\u015bliciel" },
     color: "#E82127",
-    personality: "Move fast, break things, then fix them at 2AM.",
+    personality: {
+      en: "Move fast, break things, then fix them at 2AM.",
+      pl: "Dzia\u0142aj szybko, psuj rzeczy, potem naprawiaj o 2 w nocy."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "A", vote: "yes" },
@@ -980,19 +1027,31 @@ const advisors = [
       { proj: "D", vote: "special", label: "||" },
       { proj: "C", vote: "special", label: "LAST" }
     ],
-    mindChanged: "Moved D data work earlier; run parallel with B.",
+    mindChanged: {
+      en: "Moved D data work earlier; run parallel with B.",
+      pl: "Przesun\u0105\u0142 prace nad danymi D wcze\u015bniej; r\u00f3wnolegle z B."
+    },
     isBigShift: false,
     confFrom: "High", confTo: "85%", confDir: "down",
-    r1Summary: "Musk pushed for maximum parallelism: launch B and A simultaneously, iterate fast, and don't wait for perfection. He dismissed C as a nice-to-have and suggested D was already implicit in doing B properly. Speed of execution was his top priority.",
-    r2Summary: "Accepted the board's phased approach but insisted D should run in parallel with B from day one. Pushed C to absolute last position. Acknowledged that Lanko's small team can't match Tesla's engineering bench, hence slight confidence drop."
+    r1Summary: {
+      en: "Musk pushed for maximum parallelism: launch B and A simultaneously, iterate fast, and don't wait for perfection. He dismissed C as a nice-to-have and suggested D was already implicit in doing B properly. Speed of execution was his top priority.",
+      pl: "Musk naciska\u0142 na maksymaln\u0105 r\u00f3wnoleg\u0142o\u015b\u0107: uruchom B i A jednocze\u015bnie, iteruj szybko, nie czekaj na perfekcj\u0119. Odrzuci\u0142 C jako mi\u0142y dodatek. Szybko\u015b\u0107 wykonania by\u0142a jego priorytetem."
+    },
+    r2Summary: {
+      en: "Accepted the board's phased approach but insisted D should run in parallel with B from day one. Pushed C to absolute last position. Acknowledged that Lanko's small team can't match Tesla's engineering bench, hence slight confidence drop.",
+      pl: "Przyj\u0105\u0142 podej\u015bcie fazowe, ale nalega\u0142, \u017ce D powinno biec r\u00f3wnolegle z B od pierwszego dnia. Zepchn\u0105\u0142 C na ostatnie miejsce. Przyzna\u0142, \u017ce ma\u0142y zesp\u00f3\u0142 Lanko nie dor\u00f3wna in\u017cynierii Tesli."
+    }
   },
   {
     name: "Mary Barra",
     initials: "MBa",
     org: "GM",
-    role: "Manufacturing Operator",
+    role: { en: "Manufacturing Operator", pl: "Operator Produkcyjny" },
     color: "#0170CE",
-    personality: "Factory-floor pragmatist; people and process before tech.",
+    personality: {
+      en: "Factory-floor pragmatist; people and process before tech.",
+      pl: "Pragmatyczka z hali produkcyjnej; ludzie i procesy przed technologi\u0105."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "D", vote: "yes" },
@@ -1005,19 +1064,31 @@ const advisors = [
       { proj: "A", vote: "cond", label: "PULL" },
       { proj: "C", vote: "cond" }
     ],
-    mindChanged: "A pulled forward from months 6-10 to months 4-8.",
+    mindChanged: {
+      en: "A pulled forward from months 6-10 to months 4-8.",
+      pl: "A przyspieszone z miesi\u0119cy 6-10 do miesi\u0119cy 4-8."
+    },
     isBigShift: false,
     confFrom: "High", confTo: "Medium-High", confDir: "down",
-    r1Summary: "Barra emphasized that manufacturing transformation requires workforce buy-in. She ranked D highly because data visibility is the foundation for every other project. She worried A would distract from the core ERP rollout if started too early.",
-    r2Summary: "Influenced by Ng and Benioff, agreed to pull A's timeline forward by two months. Still insisted on a conditional gate: A only proceeds if B's initial modules are stable. Confidence dipped slightly due to concerns about change management capacity."
+    r1Summary: {
+      en: "Barra emphasized that manufacturing transformation requires workforce buy-in. She ranked D highly because data visibility is the foundation for every other project. She worried A would distract from the core ERP rollout if started too early.",
+      pl: "Barra podkre\u015bli\u0142a, \u017ce transformacja produkcyjna wymaga akceptacji pracownik\u00f3w. Wysoko oceni\u0142a D, bo widoczno\u015b\u0107 danych jest fundamentem. Obawia\u0142a si\u0119, \u017ce A odci\u0105gnie uwag\u0119 od ERP."
+    },
+    r2Summary: {
+      en: "Influenced by Ng and Benioff, agreed to pull A's timeline forward by two months. Still insisted on a conditional gate: A only proceeds if B's initial modules are stable. Confidence dipped slightly due to concerns about change management capacity.",
+      pl: "Pod wp\u0142ywem Ng i Benioffa, zgodzi\u0142a si\u0119 przyspieszy\u0107 o\u015b czasu A o dwa miesi\u0105ce. Nalega\u0142a na warunkow\u0105 bramk\u0119: A rusza tylko je\u015bli modu\u0142y B s\u0105 stabilne. Pewno\u015b\u0107 lekko spad\u0142a."
+    }
   },
   {
     name: "Andrew Ng",
     initials: "AN",
     org: "Landing AI",
-    role: "AI Expert",
+    role: { en: "AI Expert", pl: "Ekspert AI" },
     color: "#FF6B35",
-    personality: "Data-first AI practitioner; systematic and evidence-driven.",
+    personality: {
+      en: "Data-first AI practitioner; systematic and evidence-driven.",
+      pl: "Praktyk AI stawiaj\u0105cy dane na pierwszym miejscu; systematyczny i oparty na dowodach."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "D", vote: "yes" },
@@ -1030,19 +1101,31 @@ const advisors = [
       { proj: "A", vote: "yes" },
       { proj: "C", vote: "cond" }
     ],
-    mindChanged: "A upgraded from conditional to YES.",
+    mindChanged: {
+      en: "A upgraded from conditional to YES.",
+      pl: "A podniesione z warunkowego do TAK."
+    },
     isBigShift: false,
     confFrom: "High", confTo: "Medium-High", confDir: "down",
-    r1Summary: "Ng advocated for a data-first strategy: B and D create the foundation, then A can leverage clean data for accurate AI quoting. He was skeptical of C, noting that product configurators require extensive training data that Lanko doesn't yet have.",
-    r2Summary: "After Benioff presented the revenue uplift math for A, Ng upgraded his vote to YES. He outlined a specific technical approach: use Gemini API with Lanko's pricing rules as structured context. Kept C as conditional pending data maturity."
+    r1Summary: {
+      en: "Ng advocated for a data-first strategy: B and D create the foundation, then A can leverage clean data for accurate AI quoting. He was skeptical of C, noting that product configurators require extensive training data that Lanko doesn't yet have.",
+      pl: "Ng opowiada\u0142 si\u0119 za strategi\u0105 data-first: B i D tworz\u0105 fundament, potem A mo\u017ce wykorzysta\u0107 czyste dane. Sceptyczny wobec C, zauwa\u017caj\u0105c brak danych treningowych."
+    },
+    r2Summary: {
+      en: "After Benioff presented the revenue uplift math for A, Ng upgraded his vote to YES. He outlined a specific technical approach: use Gemini API with Lanko's pricing rules as structured context. Kept C as conditional pending data maturity.",
+      pl: "Po prezentacji Benioffa o wzro\u015bcie przychod\u00f3w dla A, Ng podwy\u017cszy\u0142 g\u0142os do TAK. Zarysowa\u0142 podej\u015bcie techniczne: Gemini API z regu\u0142ami cenowymi Lanko. C pozostaje warunkowe."
+    }
   },
   {
     name: "Nassim Taleb",
     initials: "NT",
     org: "Author / Scholar",
-    role: "Risk Skeptic",
+    role: { en: "Risk Skeptic", pl: "Sceptyk Ryzyka" },
     color: "#8B4513",
-    personality: "Anti-fragility advocate; hates hidden risks and vendor lock-in.",
+    personality: {
+      en: "Anti-fragility advocate; hates hidden risks and vendor lock-in.",
+      pl: "Obro\u0144ca antykrucho\u015bci; nienawidzi ukrytego ryzyka i uzale\u017cnienia od dostawc\u00f3w."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "D", vote: "yes" },
@@ -1055,19 +1138,31 @@ const advisors = [
       { proj: "A", vote: "cond", label: "PROD!" },
       { proj: "C", vote: "no" }
     ],
-    mindChanged: "BIGGEST SHIFT: A went from \"small experiment\" to \"budget-capped production deployment.\"",
+    mindChanged: {
+      en: "BIGGEST SHIFT: A went from \"small experiment\" to \"budget-capped production deployment.\"",
+      pl: "NAJWI\u0118KSZA ZMIANA: A z \"ma\u0142ego eksperymentu\" do \"wdro\u017cenia produkcyjnego z limitem bud\u017cetu\"."
+    },
     isBigShift: true,
     confFrom: "70%", confTo: "78%", confDir: "up",
-    r1Summary: "Taleb warned against API dependency on Google Gemini, citing pricing risk and vendor lock-in. He wanted A as a tiny, contained experiment only. He vetoed C outright as premature complexity. His focus was on B and D as robust, controllable investments.",
-    r2Summary: "In the biggest shift of the session, Taleb moved A from 'small experiment' to 'budget-capped production deployment' after Ng demonstrated that modular API architecture allows provider switching. Still insists on a hard monthly cost ceiling and kill switch."
+    r1Summary: {
+      en: "Taleb warned against API dependency on Google Gemini, citing pricing risk and vendor lock-in. He wanted A as a tiny, contained experiment only. He vetoed C outright as premature complexity. His focus was on B and D as robust, controllable investments.",
+      pl: "Taleb ostrzega\u0142 przed uzale\u017cnieniem od API Google Gemini. Chcia\u0142 A jako ma\u0142y eksperyment. Zawetowa\u0142 C. Koncentrowa\u0142 si\u0119 na B i D jako solidnych inwestycjach."
+    },
+    r2Summary: {
+      en: "In the biggest shift of the session, Taleb moved A from 'small experiment' to 'budget-capped production deployment' after Ng demonstrated that modular API architecture allows provider switching. Still insists on a hard monthly cost ceiling and kill switch.",
+      pl: "W najwi\u0119kszej zmianie sesji, Taleb przeszed\u0142 z \"ma\u0142ego eksperymentu\" na \"wdro\u017cenie produkcyjne z limitem bud\u017cetu\" po tym, jak Ng wykaza\u0142, \u017ce modularna architektura API pozwala na zmian\u0119 dostawcy."
+    }
   },
   {
     name: "Jensen Huang",
     initials: "JH",
     org: "NVIDIA",
-    role: "Tech Strategist",
+    role: { en: "Tech Strategist", pl: "Strateg Technologiczny" },
     color: "#76B900",
-    personality: "AI-maximalist; sees compute as the answer to everything.",
+    personality: {
+      en: "AI-maximalist; sees compute as the answer to everything.",
+      pl: "Maksymalista AI; uwa\u017ca obliczenia za odpowied\u017a na wszystko."
+    },
     r1: [
       { proj: "B", vote: "yes" },
       { proj: "A", vote: "yes" },
@@ -1080,59 +1175,190 @@ const advisors = [
       { proj: "D", vote: "special", label: "||B" },
       { proj: "C", vote: "special", label: "DEFER" }
     ],
-    mindChanged: "Accepted execution risk; added D parallel with B.",
+    mindChanged: {
+      en: "Accepted execution risk; added D parallel with B.",
+      pl: "Zaakceptowa\u0142 ryzyko wykonawcze; doda\u0142 D r\u00f3wnolegle z B."
+    },
     isBigShift: false,
     confFrom: "85%", confTo: "75%", confDir: "down",
-    r1Summary: "Huang argued for an AI-first strategy: A and B simultaneously, with C as the ultimate revenue unlock. He envisioned Lanko using AI not just for quoting but as a full customer-facing product configurator. D was an afterthought in his original view.",
-    r2Summary: "Barra and Cook convinced him that D needs to run alongside B for data quality. Deferred C entirely. His confidence dropped as he recognized Lanko's team size limits parallel execution. Still sees A as transformative and ranks it firmly #2."
+    r1Summary: {
+      en: "Huang argued for an AI-first strategy: A and B simultaneously, with C as the ultimate revenue unlock. He envisioned Lanko using AI not just for quoting but as a full customer-facing product configurator. D was an afterthought in his original view.",
+      pl: "Huang argumentowa\u0142 za strategi\u0105 AI-first: A i B jednocze\u015bnie, z C jako odblokowanie przychod\u00f3w. Widzia\u0142 AI nie tylko do wycen, ale jako pe\u0142ny konfigurator dla klient\u00f3w."
+    },
+    r2Summary: {
+      en: "Barra and Cook convinced him that D needs to run alongside B for data quality. Deferred C entirely. His confidence dropped as he recognized Lanko's team size limits parallel execution. Still sees A as transformative and ranks it firmly #2.",
+      pl: "Barra i Cook przekonali go, \u017ce D musi biec obok B dla jako\u015bci danych. Odroczy\u0142 C ca\u0142kowicie. Pewno\u015b\u0107 spad\u0142a, bo uzna\u0142 ograniczenia ma\u0142ego zespo\u0142u Lanko."
+    }
   }
 ];
+
+// ============================
+// TENSIONS DATA (bilingual)
+// ============================
+const tensions = [
+  {
+    number: "1",
+    title: {
+      en: "Speed vs. Organizational Readiness",
+      pl: "Szybko\u015b\u0107 vs. Gotowo\u015b\u0107 Organizacyjna"
+    },
+    sideA: "Musk / Huang",
+    sideB: "Barra / Cook",
+    description: {
+      en: "Musk and Huang push for aggressive parallel execution and rapid AI deployment, while Barra and Cook emphasize phased rollouts tied to workforce training and process maturity.",
+      pl: "Musk i Huang naciskaj\u0105 na agresywn\u0105 r\u00f3wnoleg\u0142\u0105 realizacj\u0119 i szybkie wdro\u017cenie AI, podczas gdy Barra i Cook podkre\u015blaj\u0105 fazowe wdro\u017cenia powi\u0105zane ze szkoleniem pracownik\u00f3w i dojrza\u0142o\u015bci\u0105 proces\u00f3w."
+    }
+  },
+  {
+    number: "2",
+    title: {
+      en: "Product Ambition vs. Operational Focus",
+      pl: "Ambicja Produktowa vs. Fokus Operacyjny"
+    },
+    sideA: "Huang / Musk / Benioff",
+    sideB: "Taleb / Cook",
+    description: {
+      en: "The tech visionaries want to leapfrog with AI-native products (configurator, customer-facing AI), while the pragmatists insist on fixing core operations (ERP, data quality) before layering complexity.",
+      pl: "Wizjonerzy technologiczni chc\u0105 przeskoczy\u0107 z produktami natywnymi AI, podczas gdy pragmatycy nalegaj\u0105 na napraw\u0119 podstawowych operacji przed dodaniem z\u0142o\u017cono\u015bci."
+    }
+  },
+  {
+    number: "3",
+    title: {
+      en: "API Dependency vs. Speed to Market",
+      pl: "Uzale\u017cnienie od API vs. Szybko\u015b\u0107 Wej\u015bcia na Rynek"
+    },
+    sideA: "Taleb",
+    sideB: { en: "Rest of Board", pl: "Reszta Rady" },
+    description: {
+      en: "Taleb warns about vendor lock-in and pricing risk with Google Gemini API dependency. The majority accepts the trade-off for speed, with the caveat that modular architecture allows future migration.",
+      pl: "Taleb ostrzega przed lock-inem dostawcy i ryzykiem cenowym zwi\u0105zanym z zale\u017cno\u015bci\u0105 od Google Gemini API. Wi\u0119kszo\u015b\u0107 akceptuje ten kompromis na rzecz szybko\u015bci, z zastrze\u017ceniem modularnej architektury."
+    }
+  }
+];
+
+// ============================
+// VOTE CHANGE DATA (bilingual)
+// ============================
+const voteChangeProjects = [
+  {
+    name: "Project B", label: "ERP / MES Integration",
+    before: { yes: 7, cond: 0, no: 0 },
+    after: { yes: 7, cond: 0, no: 0 },
+    summary: { en: "Unanimous. No change.", pl: "Jednog\u0142o\u015bnie. Bez zmian." },
+    changed: false
+  },
+  {
+    name: "Project A", label: "AI-Powered Quoting Tool",
+    before: { yes: 3, cond: 4, no: 0 },
+    after: { yes: 4, cond: 3, no: 0 },
+    summary: { en: "Taleb shifted to production; Ng upgraded to YES.", pl: "Taleb przeszed\u0142 na produkcj\u0119; Ng podwy\u017cszy\u0142 do TAK." },
+    changed: true
+  },
+  {
+    name: "Project C", label: "Product Configurator",
+    before: { yes: 0, cond: 5, no: 2 },
+    after: { yes: 0, cond: 5, no: 2 },
+    summary: { en: "No change. Remains deferred.", pl: "Bez zmian. Pozostaje odroczony." },
+    changed: false
+  },
+  {
+    name: "Project D", label: "Data / Analytics Foundation",
+    before: { yes: 2, cond: 5, no: 0 },
+    after: { yes: 4, cond: 3, no: 0 },
+    summary: { en: "Cook and Huang shifted D to YES.", pl: "Cook i Huang zmienili D na TAK." },
+    changed: true
+  }
+];
+
+// ============================
+// HELPER: get localized string
+// ============================
+function t(obj) {
+  if (typeof obj === 'string') return obj;
+  return obj[currentLang] || obj['en'] || '';
+}
+
+// ============================
+// SWITCH LANGUAGE
+// ============================
+function switchLang(lang) {
+  currentLang = lang;
+
+  // Toggle button styling
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
+
+  // Update page title
+  document.title = lang === 'en'
+    ? 'Lanko Automation Strategy \u2014 Boardroom Decision Dashboard'
+    : 'Strategia Automatyzacji Lanko \u2014 Panel Decyzyjny Rady Doradczej';
+
+  // Update all static elements with data-en/data-pl attributes
+  document.querySelectorAll('[data-en][data-pl]').forEach(function(el) {
+    el.innerHTML = el.getAttribute('data-' + lang);
+  });
+
+  // Re-render all JS-generated content
+  renderConsensusDetails();
+  renderAdvisorCards();
+  renderVoteChanges();
+  renderCollapsibles();
+  renderTensions();
+}
+
+// ============================
+// RENDER CONSENSUS DETAILS
+// ============================
+function renderConsensusDetails() {
+  document.getElementById('consensusDetails').innerHTML = t(T.consensusDetails);
+}
 
 // ============================
 // RENDER ADVISOR CARDS
 // ============================
 function renderAdvisorCards() {
   const grid = document.getElementById('advisorGrid');
-  grid.innerHTML = advisors.map(a => {
-    const r1Badges = a.r1.map(v => {
-      const cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
-      const txt = v.label || v.vote.toUpperCase();
-      return `<span class="badge ${cls}">${v.proj}: ${txt}</span>`;
+  grid.innerHTML = advisors.map(function(a) {
+    var r1Badges = a.r1.map(function(v) {
+      var cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
+      var txt = v.label || v.vote.toUpperCase();
+      return '<span class="badge ' + cls + '">' + v.proj + ': ' + txt + '</span>';
     }).join('');
 
-    const finalBadges = a.final.map(v => {
-      const cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
-      const txt = v.label || v.vote.toUpperCase();
-      return `<span class="badge ${cls}">${v.proj}: ${txt}</span>`;
+    var finalBadges = a.final.map(function(v) {
+      var cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
+      var txt = v.label || v.vote.toUpperCase();
+      return '<span class="badge ' + cls + '">' + v.proj + ': ' + txt + '</span>';
     }).join('');
 
-    const shiftClass = a.isBigShift ? 'biggest-shift' : '';
+    var shiftClass = a.isBigShift ? 'biggest-shift' : '';
+    var bigLabel = a.isBigShift ? ('<strong>' + t(T.biggestShift) + '</strong> ') : '';
 
-    return `
-    <div class="advisor-card" style="border-top:3px solid ${a.color}">
-      <div class="advisor-top">
-        <div class="avatar" style="background:${a.color}">${a.initials}</div>
-        <div class="advisor-info">
-          <h3>${a.name}</h3>
-          <div class="role">${a.org} &mdash; ${a.role}</div>
-          <div class="personality">${a.personality}</div>
-        </div>
-      </div>
-      <div class="vote-section">
-        <div class="vote-section-label">Round 1 Votes</div>
-        <div class="vote-badges">${r1Badges}</div>
-        <div class="vote-section-label">Final Votes</div>
-        <div class="vote-badges">${finalBadges}</div>
-      </div>
-      <div class="mind-changed ${shiftClass}">
-        <span class="arrow">&#8594;</span>
-        <span>${a.isBigShift ? '<strong>BIGGEST SHIFT:</strong> ' : ''}${a.mindChanged}</span>
-      </div>
-      <div class="confidence-row">
-        <span class="conf-dot ${a.confDir}"></span>
-        Confidence: ${a.confFrom} &rarr; ${a.confTo}
-      </div>
-    </div>`;
+    return '<div class="advisor-card" style="border-top:3px solid ' + a.color + '">' +
+      '<div class="advisor-top">' +
+        '<div class="avatar" style="background:' + a.color + '">' + a.initials + '</div>' +
+        '<div class="advisor-info">' +
+          '<h3>' + a.name + '</h3>' +
+          '<div class="role">' + a.org + ' &mdash; ' + t(a.role) + '</div>' +
+          '<div class="personality">' + t(a.personality) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="vote-section">' +
+        '<div class="vote-section-label">' + t(T.round1Votes) + '</div>' +
+        '<div class="vote-badges">' + r1Badges + '</div>' +
+        '<div class="vote-section-label">' + t(T.finalVotes) + '</div>' +
+        '<div class="vote-badges">' + finalBadges + '</div>' +
+      '</div>' +
+      '<div class="mind-changed ' + shiftClass + '">' +
+        '<span class="arrow">&#8594;</span>' +
+        '<span>' + bigLabel + t(a.mindChanged) + '</span>' +
+      '</div>' +
+      '<div class="confidence-row">' +
+        '<span class="conf-dot ' + a.confDir + '"></span>' +
+        t(T.confidence) + ': ' + a.confFrom + ' &rarr; ' + a.confTo +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
@@ -1140,65 +1366,33 @@ function renderAdvisorCards() {
 // RENDER VOTE CHANGE CARDS
 // ============================
 function renderVoteChanges() {
-  const projects = [
-    {
-      name: "Project B", label: "ERP / MES Integration",
-      before: { yes: 7, cond: 0, no: 0 },
-      after: { yes: 7, cond: 0, no: 0 },
-      summary: "Unanimous. No change.",
-      changed: false
-    },
-    {
-      name: "Project A", label: "AI-Powered Quoting Tool",
-      before: { yes: 3, cond: 4, no: 0 },
-      after: { yes: 4, cond: 3, no: 0 },
-      summary: "Taleb shifted to production; Ng upgraded to YES.",
-      changed: true
-    },
-    {
-      name: "Project C", label: "Product Configurator",
-      before: { yes: 0, cond: 5, no: 2 },
-      after: { yes: 0, cond: 5, no: 2 },
-      summary: "No change. Remains deferred.",
-      changed: false
-    },
-    {
-      name: "Project D", label: "Data / Analytics Foundation",
-      before: { yes: 2, cond: 5, no: 0 },
-      after: { yes: 4, cond: 3, no: 0 },
-      summary: "Cook and Huang shifted D to YES.",
-      changed: true
-    }
-  ];
-
-  const grid = document.getElementById('voteChangeGrid');
-  grid.innerHTML = projects.map(p => {
+  var grid = document.getElementById('voteChangeGrid');
+  grid.innerHTML = voteChangeProjects.map(function(p) {
     function circles(data) {
-      let out = '';
-      for (let i = 0; i < data.yes; i++) out += '<span class="ba-circle g"></span>';
-      for (let i = 0; i < data.cond; i++) out += '<span class="ba-circle a"></span>';
-      for (let i = 0; i < data.no; i++) out += '<span class="ba-circle r"></span>';
+      var out = '';
+      for (var i = 0; i < data.yes; i++) out += '<span class="ba-circle g"></span>';
+      for (var i = 0; i < data.cond; i++) out += '<span class="ba-circle a"></span>';
+      for (var i = 0; i < data.no; i++) out += '<span class="ba-circle r"></span>';
       return out;
     }
-    return `
-    <div class="vote-change-card">
-      <h4><span>${p.name}</span> &mdash; ${p.label}</h4>
-      <div class="before-after">
-        <div class="ba-col">
-          <div class="ba-label">Round 1</div>
-          <div class="ba-circles">${circles(p.before)}</div>
-        </div>
-        <div class="ba-arrow">&#10132;</div>
-        <div class="ba-col">
-          <div class="ba-label">Final</div>
-          <div class="ba-circles">${circles(p.after)}</div>
-        </div>
-      </div>
-      <div class="ba-summary">
-        ${p.summary}
-        ${!p.changed ? '<span class="no-change-badge">No shift</span>' : ''}
-      </div>
-    </div>`;
+    return '<div class="vote-change-card">' +
+      '<h4><span>' + p.name + '</span> &mdash; ' + p.label + '</h4>' +
+      '<div class="before-after">' +
+        '<div class="ba-col">' +
+          '<div class="ba-label">' + t(T.round1) + '</div>' +
+          '<div class="ba-circles">' + circles(p.before) + '</div>' +
+        '</div>' +
+        '<div class="ba-arrow">&#10132;</div>' +
+        '<div class="ba-col">' +
+          '<div class="ba-label">' + t(T.final) + '</div>' +
+          '<div class="ba-circles">' + circles(p.after) + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ba-summary">' +
+        t(p.summary) +
+        (!p.changed ? ' <span class="no-change-badge">' + t(T.noShift) + '</span>' : '') +
+      '</div>' +
+    '</div>';
   }).join('');
 }
 
@@ -1206,39 +1400,63 @@ function renderVoteChanges() {
 // RENDER COLLAPSIBLE SECTIONS
 // ============================
 function renderCollapsibles() {
-  const section = document.getElementById('collapsibleSection');
-  section.innerHTML = advisors.map((a, i) => `
-    <div class="collapsible" id="coll-${i}">
-      <div class="collapsible-header" onclick="toggleCollapsible(${i})">
-        <span class="chevron">&#9654;</span>
-        <span class="ch-name">${a.name}</span>
-        <span class="ch-role">${a.org} &mdash; ${a.role}</span>
-      </div>
-      <div class="collapsible-body">
-        <div class="collapsible-content">
-          <div class="round-summary">
-            <h5>Round 1 Argument</h5>
-            <p>${a.r1Summary}</p>
-          </div>
-          <div class="round-summary">
-            <h5>Round 2 Rebuttal</h5>
-            <p>${a.r2Summary}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join('');
+  var section = document.getElementById('collapsibleSection');
+  section.innerHTML = advisors.map(function(a, i) {
+    var wasOpen = document.getElementById('coll-' + i);
+    var openClass = (wasOpen && wasOpen.classList.contains('open')) ? ' open' : '';
+    return '<div class="collapsible' + openClass + '" id="coll-' + i + '">' +
+      '<div class="collapsible-header" onclick="toggleCollapsible(' + i + ')">' +
+        '<span class="chevron">&#9654;</span>' +
+        '<span class="ch-name">' + a.name + '</span>' +
+        '<span class="ch-role">' + a.org + ' &mdash; ' + t(a.role) + '</span>' +
+      '</div>' +
+      '<div class="collapsible-body">' +
+        '<div class="collapsible-content">' +
+          '<div class="round-summary">' +
+            '<h5>' + t(T.round1Argument) + '</h5>' +
+            '<p>' + t(a.r1Summary) + '</p>' +
+          '</div>' +
+          '<div class="round-summary">' +
+            '<h5>' + t(T.round2Rebuttal) + '</h5>' +
+            '<p>' + t(a.r2Summary) + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
 function toggleCollapsible(idx) {
-  const el = document.getElementById('coll-' + idx);
+  var el = document.getElementById('coll-' + idx);
   el.classList.toggle('open');
+}
+
+// ============================
+// RENDER TENSIONS
+// ============================
+function renderTensions() {
+  var grid = document.getElementById('tensionsGrid');
+  grid.innerHTML = tensions.map(function(ten) {
+    var sideB = typeof ten.sideB === 'string' ? ten.sideB : t(ten.sideB);
+    return '<div class="tension-card">' +
+      '<div class="tension-number">' + ten.number + '</div>' +
+      '<h4>' + t(ten.title) + '</h4>' +
+      '<div class="sides">' +
+        '<span class="side-a">' + ten.sideA + '</span>' +
+        '<span class="vs">' + t(T.vs) + '</span>' +
+        '<span class="side-b">' + sideB + '</span>' +
+      '</div>' +
+      '<p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">' +
+        t(ten.description) +
+      '</p>' +
+    '</div>';
+  }).join('');
 }
 
 // ============================
 // INTERACTIVE SLIDERS
 // ============================
-const sliderIds = [
+var sliderIds = [
   'slider-leads', 'slider-conv-current', 'slider-conv-ai',
   'slider-aov', 'slider-api', 'slider-people', 'slider-hours'
 ];
@@ -1248,13 +1466,13 @@ function formatNum(n) {
 }
 
 function recalculate() {
-  const leads = parseFloat(document.getElementById('slider-leads').value);
-  const convCurrent = parseFloat(document.getElementById('slider-conv-current').value) / 100;
-  const convAI = parseFloat(document.getElementById('slider-conv-ai').value) / 100;
-  const aov = parseFloat(document.getElementById('slider-aov').value);
-  const apiCostUSD = parseFloat(document.getElementById('slider-api').value);
-  const people = parseFloat(document.getElementById('slider-people').value);
-  const hours = parseFloat(document.getElementById('slider-hours').value);
+  var leads = parseFloat(document.getElementById('slider-leads').value);
+  var convCurrent = parseFloat(document.getElementById('slider-conv-current').value) / 100;
+  var convAI = parseFloat(document.getElementById('slider-conv-ai').value) / 100;
+  var aov = parseFloat(document.getElementById('slider-aov').value);
+  var apiCostUSD = parseFloat(document.getElementById('slider-api').value);
+  var people = parseFloat(document.getElementById('slider-people').value);
+  var hours = parseFloat(document.getElementById('slider-hours').value);
 
   // Update displayed values
   document.getElementById('val-leads').textContent = leads;
@@ -1266,14 +1484,14 @@ function recalculate() {
   document.getElementById('val-hours').textContent = hours;
 
   // Calculations
-  const currentMonthly = leads * convCurrent * aov;
-  const projectedMonthly = leads * convAI * aov;
-  const upliftMonth = projectedMonthly - currentMonthly;
-  const upliftYear = upliftMonth * 12;
-  const monthlyApiCost = leads * apiCostUSD * 4; // 4 PLN per USD
-  const annualApiCost = monthlyApiCost * 12;
-  const annualNet = upliftYear - annualApiCost;
-  const roi = annualApiCost > 0 ? (annualNet / annualApiCost) * 100 : 0;
+  var currentMonthly = leads * convCurrent * aov;
+  var projectedMonthly = leads * convAI * aov;
+  var upliftMonth = projectedMonthly - currentMonthly;
+  var upliftYear = upliftMonth * 12;
+  var monthlyApiCost = leads * apiCostUSD * 4; // 4 PLN per USD
+  var annualApiCost = monthlyApiCost * 12;
+  var annualNet = upliftYear - annualApiCost;
+  var roi = annualApiCost > 0 ? (annualNet / annualApiCost) * 100 : 0;
 
   // Update outputs
   document.getElementById('out-current-rev').textContent = formatNum(currentMonthly);
@@ -1285,8 +1503,8 @@ function recalculate() {
   document.getElementById('out-roi').textContent = formatNum(roi) + '%';
 
   // Color logic for net benefit
-  const netEl = document.getElementById('out-net-annual');
-  const roiEl = document.getElementById('out-roi');
+  var netEl = document.getElementById('out-net-annual');
+  var roiEl = document.getElementById('out-roi');
   if (annualNet >= 0) {
     netEl.className = 'value positive';
     roiEl.className = 'value positive';
@@ -1296,16 +1514,18 @@ function recalculate() {
   }
 }
 
-sliderIds.forEach(id => {
+sliderIds.forEach(function(id) {
   document.getElementById(id).addEventListener('input', recalculate);
 });
 
 // ============================
 // INIT
 // ============================
+renderConsensusDetails();
 renderAdvisorCards();
 renderVoteChanges();
 renderCollapsibles();
+renderTensions();
 recalculate();
 </script>
 </body>

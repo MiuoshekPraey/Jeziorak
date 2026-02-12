@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanko Automation Strategy — Boardroom Advisory Decision Report</title>
+<style>
+    /* ===== BASE STYLES ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Georgia", "Times New Roman", serif;
+        font-size: 11pt;
+        line-height: 1.5;
+        color: #111;
+        background: #fff;
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20mm;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-weight: 700;
+        color: #111;
+    }
+
+    h1 { font-size: 28pt; letter-spacing: -0.5pt; }
+    h2 { font-size: 16pt; margin-bottom: 10pt; border-bottom: 2pt solid #111; padding-bottom: 4pt; }
+    h3 { font-size: 13pt; margin-bottom: 6pt; margin-top: 14pt; }
+    h4 { font-size: 11pt; margin-bottom: 4pt; margin-top: 10pt; }
+
+    p { margin-bottom: 8pt; text-align: justify; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 10pt 0 14pt 0;
+        font-size: 9pt;
+        line-height: 1.3;
+    }
+
+    th, td {
+        border: 1px solid #333;
+        padding: 4pt 5pt;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    th {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-weight: 700;
+        background: none;
+        border-bottom: 2px solid #111;
+    }
+
+    td { font-family: "Georgia", serif; }
+
+    .page {
+        page-break-after: always;
+        min-height: 247mm;
+        position: relative;
+        padding-bottom: 20mm;
+    }
+
+    .page:last-child {
+        page-break-after: avoid;
+    }
+
+    .page-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 8pt;
+        color: #666;
+        border-top: 0.5pt solid #999;
+        padding-top: 4pt;
+    }
+
+    .cover-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 247mm;
+    }
+
+    .cover-page h1 {
+        margin-bottom: 6pt;
+        font-size: 32pt;
+    }
+
+    .cover-subtitle {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 16pt;
+        font-weight: 400;
+        color: #444;
+        margin-bottom: 30pt;
+    }
+
+    .cover-date {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 12pt;
+        color: #555;
+        margin-bottom: 24pt;
+    }
+
+    .cover-question {
+        font-style: italic;
+        font-size: 12pt;
+        max-width: 480pt;
+        margin: 0 auto 30pt auto;
+        line-height: 1.6;
+        border: 1.5pt solid #333;
+        padding: 14pt 18pt;
+    }
+
+    .cover-advisors {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 10pt;
+        color: #333;
+        margin-bottom: 10pt;
+    }
+
+    .cover-advisors strong {
+        display: block;
+        font-size: 11pt;
+        margin-bottom: 6pt;
+    }
+
+    .cover-consensus {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 13pt;
+        font-weight: 700;
+        margin-top: 20pt;
+        border: 2pt solid #111;
+        padding: 8pt 20pt;
+    }
+
+    .label {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-weight: 700;
+        font-size: 9pt;
+        text-transform: uppercase;
+        letter-spacing: 0.5pt;
+    }
+
+    .vote-yes { font-weight: 700; }
+    .vote-no { font-style: italic; }
+    .vote-cond { }
+
+    .advisor-block {
+        margin-bottom: 16pt;
+        border: 1pt solid #999;
+        padding: 10pt 12pt;
+    }
+
+    .advisor-block h3 {
+        margin-top: 0;
+        border-bottom: 1pt solid #ccc;
+        padding-bottom: 4pt;
+        margin-bottom: 8pt;
+    }
+
+    .advisor-meta {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 9pt;
+        color: #555;
+        margin-bottom: 8pt;
+    }
+
+    .advisor-block h4 {
+        font-size: 10pt;
+        margin-top: 8pt;
+        margin-bottom: 4pt;
+        color: #333;
+    }
+
+    .tension-block {
+        border: 1pt solid #999;
+        padding: 10pt 12pt;
+        margin-bottom: 12pt;
+    }
+
+    .tension-block h3 {
+        margin-top: 0;
+    }
+
+    .timeline-phase {
+        border-left: 3pt solid #111;
+        padding: 8pt 0 8pt 14pt;
+        margin-bottom: 10pt;
+    }
+
+    .timeline-phase h3 {
+        margin-top: 0;
+    }
+
+    .tally-row {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1pt solid #ccc;
+        padding: 5pt 0;
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+        font-size: 10pt;
+    }
+
+    .tally-label { font-weight: 700; flex: 1; }
+    .tally-value { flex: 2; }
+
+    .synthesis-item {
+        margin-bottom: 8pt;
+        padding-left: 12pt;
+        border-left: 2pt solid #555;
+    }
+
+    .synthesis-item strong {
+        font-family: "Helvetica Neue", "Arial", sans-serif;
+    }
+
+    /* ===== PRINT STYLES ===== */
+    @media print {
+        body {
+            padding: 0;
+            margin: 0;
+            max-width: none;
+            font-size: 10.5pt;
+        }
+
+        @page {
+            size: A4;
+            margin: 18mm 16mm 22mm 16mm;
+        }
+
+        .page {
+            page-break-after: always;
+            min-height: auto;
+            padding-bottom: 14mm;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        .cover-page {
+            min-height: auto;
+            padding-top: 60mm;
+            page-break-after: always;
+        }
+
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 16mm;
+            right: 16mm;
+        }
+
+        .no-break {
+            page-break-inside: avoid;
+        }
+
+        h2 {
+            page-break-after: avoid;
+        }
+
+        .advisor-block {
+            page-break-inside: avoid;
+        }
+
+        table {
+            page-break-inside: avoid;
+        }
+
+        a {
+            text-decoration: none;
+            color: #111;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- PAGE 1: COVER                                                 -->
+<!-- ============================================================ -->
+<div class="page cover-page">
+    <h1>LANKO AUTOMATION STRATEGY</h1>
+    <div class="cover-subtitle">Boardroom Advisory Decision Report</div>
+    <div class="cover-date">February 12, 2026</div>
+
+    <div class="cover-question">
+        "Which factory/company automation projects should Lanko prioritize,
+        in what order, and how should resources be allocated?"
+    </div>
+
+    <div class="cover-advisors">
+        <strong>Board of Advisors</strong>
+        Tim Cook &middot; Marc Benioff &middot; Elon Musk &middot; Mary Barra<br>
+        Andrew Ng &middot; Nassim Nicholas Taleb &middot; Jensen Huang
+    </div>
+
+    <div class="cover-consensus">Consensus: Strong Majority</div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 2: EXECUTIVE SUMMARY                                     -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Executive Summary</h2>
+
+    <h3>Final Recommendation</h3>
+    <p>
+        Start Wincon Integration (Project B) immediately as the foundational data backbone, with narrow
+        process automation (Project D) running in parallel on invoicing and the top three operational
+        bottlenecks. Deploy the AI Pricing Tool (Project A) as an internal-only tool by months 3&ndash;4,
+        using every quote generated as training data to build the data flywheel that Andrew Ng identified
+        as the single highest-leverage concept in this strategy. Defer customer service bots (Project C)
+        until month 10 or later, conditional on CRM maturity and validated results from Project A. This
+        sequencing balances speed-to-value against organizational absorptive capacity, protects against
+        API dependency fragility, and preserves optionality on the most ambitious plays.
+    </p>
+
+    <h3>Vote Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left;">Advisor</th>
+                <th>B (Wincon)<br>R1 / Final</th>
+                <th>A (AI Pricing)<br>R1 / Final</th>
+                <th>D (Process)<br>R1 / Final</th>
+                <th>C (Bots)<br>R1 / Final</th>
+                <th>Confidence<br>R1 / Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td style="text-align:left;">Tim Cook</td><td>YES / YES</td><td>COND / COND</td><td>COND / YES</td><td>NO / COND</td><td>High / High</td></tr>
+            <tr><td style="text-align:left;">Marc Benioff</td><td>YES / YES</td><td>YES / YES</td><td>COND / BG</td><td>COND / COND</td><td>High / 82%</td></tr>
+            <tr><td style="text-align:left;">Elon Musk</td><td>YES / YES</td><td>YES / YES</td><td>COND / Parallel</td><td>COND / Last</td><td>High / 85%</td></tr>
+            <tr><td style="text-align:left;">Mary Barra</td><td>YES / YES</td><td>COND / COND</td><td>YES / YES</td><td>COND / COND</td><td>High / Med-High</td></tr>
+            <tr><td style="text-align:left;">Andrew Ng</td><td>YES / YES</td><td>COND / YES</td><td>YES / YES</td><td>COND-NO / COND</td><td>High / Med-High</td></tr>
+            <tr><td style="text-align:left;">Nassim Taleb</td><td>YES / YES</td><td>COND / YES-COND</td><td>YES / YES</td><td>NO / NO</td><td>~70% / 78%</td></tr>
+            <tr><td style="text-align:left;">Jensen Huang</td><td>YES / YES</td><td>YES / YES</td><td>COND / Parallel</td><td>COND / Defer</td><td>85% / 75%</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Key Insight</h3>
+    <p>
+        <strong>Andrew Ng's Data Flywheel:</strong> Every quote the AI Pricing Tool generates becomes
+        training data for the next iteration of the model. This transforms Project A from a static tool
+        deployment into a compounding learning system. The flywheel concept unified the board around
+        starting data collection early&mdash;even before the pricing tool is customer-facing&mdash;and was
+        the single idea that shifted the most votes between rounds.
+    </p>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 3: VOTE TRACKER DETAIL                                   -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Vote Tracker Detail</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align:left;">Advisor</th>
+                <th>B R1</th>
+                <th>B Final</th>
+                <th>A R1</th>
+                <th>A Final</th>
+                <th>D R1</th>
+                <th>D Final</th>
+                <th>C R1</th>
+                <th>C Final</th>
+                <th>Conf. R1</th>
+                <th>Conf. Final</th>
+                <th>Changed?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Tim Cook</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>COND</td>
+                <td>COND</td><td>YES</td>
+                <td>NO</td><td>COND</td>
+                <td>High</td><td>High</td>
+                <td>Minor</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Marc Benioff</td>
+                <td>YES</td><td>YES</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>BG</td>
+                <td>COND</td><td>COND</td>
+                <td>High</td><td>82%</td>
+                <td>Minor</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Elon Musk</td>
+                <td>YES</td><td>YES</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>Parallel</td>
+                <td>COND</td><td>Last</td>
+                <td>High</td><td>85%</td>
+                <td>Minor</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Mary Barra</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>COND</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>COND</td>
+                <td>High</td><td>Med-High</td>
+                <td style="font-weight:700;">YES &mdash; A pulled forward</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Andrew Ng</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>YES</td>
+                <td>YES</td><td>YES</td>
+                <td>COND-NO</td><td>COND</td>
+                <td>High</td><td>Med-High</td>
+                <td style="font-weight:700;">YES &mdash; A upgraded</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Nassim Taleb</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>YES-COND</td>
+                <td>YES</td><td>YES</td>
+                <td>NO</td><td>NO</td>
+                <td>~70%</td><td>78%</td>
+                <td style="font-weight:700;">YES &mdash; BIGGEST SHIFT</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">Jensen Huang</td>
+                <td>YES</td><td>YES</td>
+                <td>YES</td><td>YES</td>
+                <td>COND</td><td>Parallel</td>
+                <td>COND</td><td>Defer</td>
+                <td>85%</td><td>75%</td>
+                <td style="font-weight:700;">YES &mdash; confidence down</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Reading the Table</h3>
+    <p>
+        <strong>YES</strong> = unconditional approval. <strong>COND</strong> = conditional approval (proceed only if
+        stated prerequisites are met). <strong>NO</strong> = do not proceed. <strong>BG</strong> = background priority.
+        <strong>R1</strong> = Round 1 initial vote. <strong>Final</strong> = post-rebuttal final vote.
+        The "Changed?" column flags advisors whose position materially shifted between rounds.
+    </p>
+    <p>
+        Project B (Wincon Integration) achieved unanimous YES in both rounds&mdash;the only project with
+        full consensus. The most contested project was C (Customer Service Bots), which no advisor
+        endorsed unconditionally for near-term deployment. Taleb's shift on Project A, from COND to
+        YES-COND after accepting Ng's data flywheel argument, was the most significant position change
+        in the entire deliberation.
+    </p>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGES 4-5: KEY TENSIONS AND DECISION FRAMEWORK                -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Key Tensions and Decision Framework</h2>
+
+    <h3>Three Core Tensions</h3>
+
+    <div class="tension-block no-break">
+        <h3>1. Speed vs. Organizational Readiness</h3>
+        <p style="margin-bottom:4pt;"><span class="label">Fault line:</span> Musk &amp; Huang vs. Barra &amp; Cook</p>
+        <p>
+            Musk argued that Wincon integration should take 2&ndash;3 weeks, not months, and that
+            parallelizing aggressively is the only way to avoid death by incrementalism. Huang echoed
+            this with his refrain that "caution has a cost." On the other side, Barra introduced the
+            concept of absorptive capacity&mdash;the measurable limit on how much change a 120-person
+            organization can metabolize at once. Cook reinforced this by noting that Apple's supply
+            chain excellence comes from sequencing, not speed. The resolution: pursue B and D in
+            parallel (satisfying the speed camp) but with explicit stage gates and a change management
+            lead (satisfying the readiness camp).
+        </p>
+    </div>
+
+    <div class="tension-block no-break">
+        <h3>2. Product Ambition vs. Operational Focus</h3>
+        <p style="margin-bottom:4pt;"><span class="label">Fault line:</span> Huang, Musk &amp; Benioff vs. Taleb &amp; Cook</p>
+        <p>
+            Huang and Benioff see Project A as the seed of a platform play&mdash;an intelligence layer
+            for European window manufacturing worth potentially 1.5M PLN in SaaS revenue. Musk wants
+            Lanko to become "a software company that makes windows." Taleb dismisses all market
+            projections as narrative-driven fantasy and insists on focusing exclusively on removing
+            existing dysfunction. Cook occupies the middle, seeing product potential but only after
+            operational foundations are solid. The resolution: allow A to proceed on an internal-only
+            basis with capped budget, deferring product ambitions until the tool proves value internally.
+        </p>
+    </div>
+
+    <div class="tension-block no-break">
+        <h3>3. API Dependency vs. Speed to Market</h3>
+        <p style="margin-bottom:4pt;"><span class="label">Fault line:</span> Taleb vs. the rest of the board</p>
+        <p>
+            Taleb raised a structural concern that no other advisor initially addressed: building core
+            business logic on third-party APIs (OpenAI, Claude, etc.) creates fragility. If API pricing
+            changes, rate limits shift, or a provider discontinues a model, Lanko's pricing tool breaks.
+            Musk partially agreed, suggesting self-hosting within 12 months. Huang accepted the critique
+            in Round 2, contributing to his confidence drop from 85% to 75%. The resolution: begin with
+            API-based deployment for speed, but architect for portability from day one, with a 12-month
+            review on self-hosting feasibility.
+        </p>
+    </div>
+
+    <h3>Decision Framework</h3>
+    <p>
+        <strong>Two-Way Door (Reversible):</strong> Projects B and D are two-way doors. If Wincon
+        integration underperforms or narrow process automations fail, Lanko can revert without
+        significant sunk cost. These should proceed with speed and minimal bureaucracy.
+    </p>
+    <p>
+        <strong>One-Way Door (Irreversible):</strong> Project A's product ambitions&mdash;external
+        SaaS pricing, platform positioning, market commitments&mdash;are one-way doors. Once Lanko
+        promises AI-powered pricing to customers, retreat damages credibility. These decisions require
+        stage-gated validation before commitment.
+    </p>
+    <p>
+        <strong>Barbell Strategy:</strong> Combine a safe, high-certainty foundation (B + D) with a
+        small, capped bet on high-upside outcomes (A as internal tool with option to expand). Avoid the
+        middle ground of moderate investment in everything simultaneously, which spreads resources too
+        thin for a 120-person company.
+    </p>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGES 6-12: FULL ARGUMENTS                                    -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Full Advisory Arguments</h2>
+
+    <div class="advisor-block">
+        <h3>Tim Cook</h3>
+        <div class="advisor-meta">Role: Operations &amp; Supply Chain &nbsp;|&nbsp; Archetype: The Integrator</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Cook argued that Project B is not merely an integration task but the foundational data backbone
+            upon which every other project depends. Without clean, structured data flowing from Wincon into
+            a unified system, the AI Pricing Tool is building on sand and customer bots are "an illusion of
+            service." He identified hidden value in Wincon data: 2&ndash;4 margin points currently lost to
+            manual pricing inconsistencies, order duplication, and inventory mismatches. His sequencing was
+            firm&mdash;B first, then D for quick operational wins, then A only after data quality meets a
+            defined threshold, and C deferred indefinitely until CRM infrastructure exists. Cook emphasized
+            that Apple's supply chain dominance came not from doing everything at once but from perfecting
+            each link in the chain before adding the next. He voted YES on B, CONDITIONAL on A and D, and
+            NO on C, with high overall confidence.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Cook pushed back firmly against Jensen and Musk's platform ambitions, calling the "intelligence
+            layer for European window manufacturing" framing premature for a company that has not yet
+            consolidated its own operational data. He adopted Benioff's insight that CRM functionality
+            should be embedded into Project B from the start rather than treated as a separate initiative,
+            and endorsed Barra's absorptive capacity framework as validation for his sequencing approach.
+            His D vote upgraded from CONDITIONAL to YES, and C softened from NO to CONDITIONAL. Core
+            position unchanged.
+        </p>
+    </div>
+
+    <div class="advisor-block">
+        <h3>Marc Benioff</h3>
+        <div class="advisor-meta">Role: CRM &amp; SaaS Strategy &nbsp;|&nbsp; Archetype: The Platform Evangelist</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Benioff's central argument was that Lanko's lack of a CRM system represents an existential gap,
+            not a nice-to-have. Without a Customer 360 view, every project operates with incomplete context:
+            the pricing tool cannot factor in customer history, the bots cannot personalize service, and even
+            Wincon integration loses half its value if customer data remains siloed. He positioned Project A
+            not as a simple internal tool but as a SaaS platform opportunity with 1.5M PLN revenue potential
+            within 18&ndash;24 months, arguing that the window manufacturing industry is starving for
+            intelligent pricing and Lanko could own that niche. His sequencing placed CRM as a parallel
+            workstream alongside B, with A following immediately. He voted YES on B and A, CONDITIONAL on D
+            and C, with high confidence.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Benioff called Barra's conservative timeline "the most dangerous recommendation on this board"
+            because it risks Lanko losing its first-mover window in AI-assisted pricing for the European
+            window market. However, he conceded that B should lead A by a slight margin rather than running
+            fully in parallel, accepting Cook's data-quality prerequisite. He enthusiastically adopted Ng's
+            data flywheel concept, calling it "the SaaS moat I was looking for." His position shifted only
+            on D, downgrading it to background priority. Confidence landed at 82%.
+        </p>
+    </div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<div class="page">
+    <div class="advisor-block">
+        <h3>Elon Musk</h3>
+        <div class="advisor-meta">Role: First Principles &amp; Velocity &nbsp;|&nbsp; Archetype: The Accelerationist</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Musk approached the problem from first principles: what is the minimum viable path from current
+            state to a company where software generates more value than physical products? His answer: B
+            should take 2&ndash;3 weeks with a competent team, not the months others were suggesting. Project A
+            is the real prize because it transforms Lanko from a window manufacturer into "a software company
+            that makes windows"&mdash;a fundamental reframing of the business. He argued for aggressive
+            parallelization, noting that sequential planning is how incumbents die. On self-hosting, Musk
+            insisted Lanko should plan to run its own models within 12 months to eliminate API dependency,
+            citing the trajectory of open-source model capabilities. He voted YES on B and A, CONDITIONAL on
+            D and C, with high confidence and the fastest proposed timeline of any advisor.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Musk was blunt in his assessment of Barra's stage-gated approach: "This kind of thinking kills
+            companies. It's how GM lost to Tesla." He accepted Ng's data quality point as "the one thing
+            worth slowing down for" but maintained that organizational readiness concerns are overblown for
+            a 120-person company where the CEO can talk to every employee directly. He moved D to parallel
+            execution alongside B and relegated C to dead last. Confidence at 85%.
+        </p>
+    </div>
+
+    <div class="advisor-block">
+        <h3>Mary Barra</h3>
+        <div class="advisor-meta">Role: Change Management &amp; Industrial Transformation &nbsp;|&nbsp; Archetype: The Stage-Gater</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Barra brought the most structured framework to the deliberation: stage-gated implementation with
+            explicit go/no-go criteria at each transition. Her core concept was absorptive capacity&mdash;the
+            organizational science finding that companies can only metabolize a finite amount of change per
+            unit of time, and that exceeding this capacity leads not to faster outcomes but to systemic
+            failure. For a 120-person company like Lanko, she estimated the capacity at roughly one major
+            initiative plus one minor initiative at any time. She insisted on hiring a dedicated change
+            management lead before launching even Project B, and flagged that Maciej (the technical lead)
+            appears to be a single point of failure across multiple proposed projects. She voted YES on B
+            and D, CONDITIONAL on A and C, with high confidence in her sequencing.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Barra responded sharply to Musk: "Move fast and break things works in Silicon Valley where your
+            product is software. When your product is physical windows installed in buildings, broken things
+            have liability." However, she made the most significant concession of any advisor by pulling
+            Project A forward by approximately two months, accepting Ng's argument that data collection
+            should begin earlier even if the tool is not customer-facing. She flagged Maciej as a single
+            point of failure requiring immediate mitigation. Confidence adjusted to medium-high.
+        </p>
+    </div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<div class="page">
+    <div class="advisor-block">
+        <h3>Andrew Ng</h3>
+        <div class="advisor-meta">Role: AI &amp; Data Strategy &nbsp;|&nbsp; Archetype: The Data Scientist</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Ng's contribution centered on a single powerful concept: the data flywheel. Every quote that the
+            AI Pricing Tool generates&mdash;whether accepted, rejected, or modified by a human&mdash;becomes
+            labeled training data for the next iteration of the model. This means Project A's value compounds
+            over time in a way that none of the other projects do. However, Ng was emphatic that the flywheel
+            only works if the input data is clean, which makes Project B a non-negotiable prerequisite. He
+            argued against building on "dirty data," noting that the most common failure mode in enterprise AI
+            is deploying models on garbage inputs and then blaming the model. He recommended hiring a dedicated
+            data labeling person to ensure quote outcomes are systematically captured. He voted YES on B and D,
+            CONDITIONAL on A (pending B completion), and CONDITIONAL-NO on C, with high confidence.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Ng directly challenged Taleb's characterization of Project A as speculation, arguing that it is
+            "a learning problem, not a speculation problem"&mdash;the model improves with every data point
+            regardless of market conditions. He narrowed his scope for Project D, recommending that only
+            automations which generate structured data should be prioritized (e.g., invoicing over email
+            templates). His Project A vote upgraded from CONDITIONAL to YES, though he maintained that the
+            tool should remain internal-only until the flywheel demonstrates measurable improvement.
+            Confidence at medium-high.
+        </p>
+    </div>
+
+    <div class="advisor-block">
+        <h3>Nassim Nicholas Taleb</h3>
+        <div class="advisor-meta">Role: Risk &amp; Antifragility &nbsp;|&nbsp; Archetype: The Skeptic</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Taleb applied his via negativa principle: instead of asking what to add, ask what to remove.
+            Lanko's primary problem is not a lack of AI tools but an excess of operational dysfunction&mdash;manual
+            processes, data silos, missing CRM, unstructured pricing. The correct first move is removing these
+            dysfunctions through B and D, not layering AI on top of them. He dismissed all market projections
+            for Project A (including Benioff's 1.5M PLN estimate) as "narrativized nonsense"&mdash;precisely
+            the kind of false precision that makes organizations fragile. His most structural critique targeted
+            API dependency: building core business logic on third-party APIs creates a single point of failure
+            that Lanko cannot control. He voted YES on B and D, CONDITIONAL on A, and NO on C, with approximately
+            70% confidence&mdash;the lowest on the board, reflecting his inherent skepticism of any forward plan.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Taleb identified Jensen Huang as "the most dangerous voice on this board" for constructing
+            compelling narratives around platform plays that have no empirical foundation at Lanko's scale.
+            However, he made the biggest shift of any advisor: Ng's data flywheel argument changed his
+            assessment of Project A from speculative to empirically grounded. If every quote is a data point,
+            then A is not a bet on market projections but an investment in learning&mdash;a framing Taleb
+            found antifragile. His Project A vote moved from CONDITIONAL to YES-CONDITIONAL, and his
+            overall confidence rose from approximately 70% to 78%. He remained firm on NO for Project C.
+        </p>
+    </div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<div class="page">
+    <div class="advisor-block">
+        <h3>Jensen Huang</h3>
+        <div class="advisor-meta">Role: AI Platform &amp; Compute Strategy &nbsp;|&nbsp; Archetype: The Visionary</div>
+
+        <h4>Round 1 Position</h4>
+        <p>
+            Huang brought the most ambitious framing: Project A is not a pricing tool but a "killer app"&mdash;the
+            seed of an intelligence layer for the entire European window manufacturing industry. He argued that
+            the companies who win in the next decade will be those who own the AI layer of their industry, and
+            Lanko has a first-mover opportunity because the window manufacturing sector is technologically
+            unsophisticated. His analogy: just as NVIDIA went from making graphics cards to owning the AI compute
+            stack, Lanko can go from making windows to owning the intelligence stack for window pricing,
+            configuration, and manufacturing optimization. He endorsed aggressive parallelization of B, A, and D,
+            with C as a fast-follower. He voted YES on B and A, CONDITIONAL on D and C, with 85% confidence&mdash;the
+            highest specific number on the board.
+        </p>
+
+        <h4>Round 2 Rebuttal</h4>
+        <p>
+            Huang accepted two critiques that materially affected his position. First, Taleb's API dependency
+            argument: Huang conceded that building on third-party APIs without an architecture-for-portability
+            mandate creates genuine fragility, though he maintained the speed benefit justifies the near-term
+            risk. Second, Barra's absorptive capacity framework: Huang acknowledged that a 120-person company
+            cannot execute like NVIDIA's 30,000-person engineering organization. These concessions dropped his
+            confidence from 85% to 75%&mdash;the only advisor whose confidence declined between rounds. His
+            closing argument: "Caution has a cost, and the cost is measured in competitors who move while you
+            deliberate." He moved C to defer and D to parallel.
+        </p>
+    </div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 13: RECOMMENDED TIMELINE                                 -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Recommended Timeline</h2>
+
+    <div class="timeline-phase">
+        <h3>Months 1&ndash;3: Foundation</h3>
+        <p>
+            <strong>Project B &mdash; Wincon Integration</strong><br>
+            Full data integration between Wincon ERP and Lanko's operational systems. Establish single source
+            of truth for pricing data, order history, inventory levels, and customer records. Embed basic CRM
+            data capture into the integration layer per Benioff's recommendation. Hire change management lead
+            per Barra's requirement. Define data quality thresholds that gate Project A deployment.
+        </p>
+        <p>
+            <strong>Project D &mdash; Narrow Process Automation (Parallel)</strong><br>
+            Scope limited to: (1) automated invoicing pipeline, (2) top three operational bottlenecks identified
+            by floor managers, (3) only automations that generate structured, capturable data per Ng's criteria.
+            Explicitly exclude broad process reengineering. Budget capped. Review at month 3.
+        </p>
+    </div>
+
+    <div class="timeline-phase">
+        <h3>Months 3&ndash;8: Intelligence Layer</h3>
+        <p>
+            <strong>Project A &mdash; AI Pricing Tool (Internal Deployment)</strong><br>
+            Deploy as internal-only tool for Lanko's sales team. Every quote generated feeds the data flywheel.
+            No external customer access. No SaaS positioning. Measure: model accuracy improvement per 1,000
+            quotes, human override rate, time-to-quote reduction. Stage gate at month 6: if model accuracy
+            exceeds defined threshold and human override rate is below 30%, begin controlled pilot with
+            3&ndash;5 trusted customers. Architecture must support model portability from day one per Taleb's
+            API dependency concern.
+        </p>
+    </div>
+
+    <div class="timeline-phase">
+        <h3>Months 6&ndash;8: CRM Foundation</h3>
+        <p>
+            <strong>Basic CRM Implementation</strong><br>
+            Build on the customer data already flowing through Project B. Implement Customer 360 view as
+            prerequisite for Project C. Lightweight deployment&mdash;not a full Salesforce implementation
+            but a structured customer data layer that supports bot personalization and service history.
+        </p>
+    </div>
+
+    <div class="timeline-phase">
+        <h3>Months 10+: Conditional Expansion</h3>
+        <p>
+            <strong>Project C &mdash; AI Customer Service Bots</strong><br>
+            Proceed only if: (1) CRM is operational with minimum 6 months of customer data, (2) Project A
+            has demonstrated validated accuracy in controlled pilot, (3) organizational capacity assessment
+            confirms readiness. If conditions are not met, defer further. As Cook noted: "A bot without
+            CRM is an illusion of service."
+        </p>
+    </div>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PAGE 14: SYNTHESIS                                             -->
+<!-- ============================================================ -->
+<div class="page">
+    <h2>Synthesis</h2>
+
+    <h3>Final Vote Tally</h3>
+    <table style="font-size:10pt;">
+        <thead>
+            <tr>
+                <th style="text-align:left;">Project</th>
+                <th>Result</th>
+                <th>Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align:left; font-weight:700;">B &mdash; Wincon Integration</td>
+                <td style="font-weight:700;">Unanimous YES</td>
+                <td>7/7 in both rounds. No dissent.</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">A &mdash; AI Pricing Tool</td>
+                <td style="font-weight:700;">Strong Majority</td>
+                <td>4 YES, 3 CONDITIONAL. Internal-only with stage gates.</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">D &mdash; Process Automation</td>
+                <td style="font-weight:700;">Strong Majority</td>
+                <td>4 YES, 2 Parallel, 1 BG. Narrowed scope vs. Round 1.</td>
+            </tr>
+            <tr>
+                <td style="text-align:left; font-weight:700;">C &mdash; Customer Service Bots</td>
+                <td style="font-weight:700;">Deferred</td>
+                <td>0 YES, 4 CONDITIONAL, 1 Last, 1 Defer, 1 NO. Month 10+ conditional.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Who Changed Position</h3>
+    <div class="synthesis-item">
+        <strong>Nassim Taleb (Biggest Shift):</strong> Moved Project A from CONDITIONAL to YES-CONDITIONAL
+        after Ng's data flywheel reframed it from speculation to empirical learning. Confidence rose from
+        ~70% to 78%. The board's most vocal skeptic partially converted.
+    </div>
+    <div class="synthesis-item">
+        <strong>Mary Barra:</strong> Pulled Project A forward by approximately two months, accepting earlier
+        data collection despite organizational readiness concerns. Flagged Maciej as single point of failure.
+    </div>
+    <div class="synthesis-item">
+        <strong>Andrew Ng:</strong> Upgraded Project A from CONDITIONAL to full YES. Narrowed Project D scope
+        to data-generating automations only.
+    </div>
+    <div class="synthesis-item">
+        <strong>Marc Benioff:</strong> Conceded B should lead A slightly. Downgraded D to background priority.
+        Adopted Ng's flywheel as the SaaS moat thesis.
+    </div>
+    <div class="synthesis-item">
+        <strong>Jensen Huang:</strong> Confidence dropped from 85% to 75% after accepting Taleb's API critique
+        and Barra's absorptive capacity framework. Vision unchanged but timeline expectations moderated.
+    </div>
+
+    <h3>Biggest Fight</h3>
+    <p>
+        <strong>Musk vs. Barra on pace.</strong> Musk: "This kind of thinking kills companies." Barra: "Move
+        fast and break things works when your product is software. When your product is physical windows
+        installed in buildings, broken things have liability." This tension remained unresolved at the
+        individual level but was operationally resolved through the parallel B+D approach with stage gates.
+    </p>
+
+    <h3>Sharpest Insight</h3>
+    <p>
+        <strong>Andrew Ng's Data Flywheel.</strong> Every quote becomes training data. This single concept
+        shifted Taleb (the hardest vote to move), pulled Barra's timeline forward, gave Benioff his SaaS
+        moat, and provided the entire board with a shared mental model for why Project A has compounding
+        value even before it is customer-facing.
+    </p>
+
+    <h3>Likely Decision</h3>
+    <p style="font-size:12pt; font-weight:700; border:2pt solid #111; padding:10pt 14pt; text-align:center;">
+        B &rarr; D &rarr; A &rarr; C<br>
+        <span style="font-weight:400; font-size:10pt;">with budget caps and stage gates at each transition</span>
+    </p>
+
+    <div class="page-footer">Lanko Boardroom Advisory &mdash; Confidential &mdash; February 2026</div>
+</div>
+
+</body>
+</html>

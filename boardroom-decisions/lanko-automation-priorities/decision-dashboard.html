@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lanko Automation Strategy — Boardroom Decision Dashboard</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #1a1a2e;
+  --navy-light: #16213e;
+  --navy-mid: #0f3460;
+  --gold: #e8b931;
+  --gold-dim: #c9a227;
+  --white: #ffffff;
+  --off-white: #f0f0f5;
+  --gray: #a0a0b8;
+  --green: #2ecc71;
+  --green-bg: rgba(46, 204, 113, 0.15);
+  --amber: #f39c12;
+  --amber-bg: rgba(243, 156, 18, 0.15);
+  --red: #e74c3c;
+  --red-bg: rgba(231, 76, 60, 0.15);
+  --card-bg: #22223a;
+  --card-border: #2a2a4a;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* --- HEADER --- */
+.header {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 50%, var(--navy-mid) 100%);
+  border-bottom: 3px solid var(--gold);
+  padding: 2.5rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 50%, rgba(232,185,49,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.header-date {
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.header h1 {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.header h1 span { color: var(--gold); }
+.header-subtitle {
+  font-size: 1.05rem;
+  color: var(--gray);
+  font-style: italic;
+}
+
+/* --- CONTAINER --- */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* --- SECTION TITLES --- */
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 2.5rem 0 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
+  color: var(--gold);
+}
+
+/* --- CONSENSUS METER --- */
+.consensus-section {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.consensus-label {
+  font-size: 1rem;
+  color: var(--gray);
+  margin-bottom: 0.75rem;
+}
+.consensus-result {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 1rem;
+}
+.consensus-bar-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.consensus-bar-item { flex: 1; min-width: 200px; }
+.consensus-bar-item label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-bottom: 0.3rem;
+}
+.bar-track {
+  height: 28px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--navy);
+  transition: width 0.8s ease;
+}
+.bar-fill.green { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+.bar-fill.amber { background: linear-gradient(90deg, #e67e22, #f39c12); }
+.bar-fill.red { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+.bar-fill.gold { background: linear-gradient(90deg, var(--gold-dim), var(--gold)); }
+
+.consensus-details {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.8;
+}
+
+/* --- ADVISOR GRID --- */
+.advisor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.advisor-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.advisor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.advisor-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+.advisor-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--white);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.advisor-info h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.advisor-info .role {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 600;
+}
+.advisor-info .personality {
+  font-size: 0.78rem;
+  color: var(--gray);
+  margin-top: 2px;
+  font-style: italic;
+}
+.vote-section {
+  margin-top: 0.8rem;
+}
+.vote-section-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gray);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+.vote-badges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.badge.yes { background: var(--green-bg); color: var(--green); border: 1px solid rgba(46,204,113,0.3); }
+.badge.cond { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(243,156,18,0.3); }
+.badge.no { background: var(--red-bg); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+.badge.special { background: rgba(232,185,49,0.15); color: var(--gold); border: 1px solid rgba(232,185,49,0.3); }
+
+.mind-changed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+  padding: 0.5rem 0.7rem;
+  background: rgba(232,185,49,0.08);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.78rem;
+  color: var(--off-white);
+}
+.mind-changed .arrow { color: var(--gold); font-weight: 700; font-size: 1rem; }
+.biggest-shift {
+  background: rgba(232,185,49,0.15) !important;
+  border-left-color: var(--gold) !important;
+}
+.confidence-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+.conf-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.conf-dot.up { background: var(--green); }
+.conf-dot.down { background: var(--red); }
+.conf-dot.same { background: var(--gray); }
+
+/* --- VOTE CHANGE VIZ --- */
+.vote-change-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.vote-change-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.3rem;
+  box-shadow: var(--shadow);
+}
+.vote-change-card h4 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: var(--off-white);
+}
+.vote-change-card h4 span { color: var(--gold); }
+.before-after {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.ba-col {
+  flex: 1;
+  text-align: center;
+}
+.ba-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gray);
+  margin-bottom: 0.4rem;
+}
+.ba-circles {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.ba-circle {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.ba-circle.g { background: var(--green); }
+.ba-circle.a { background: var(--amber); }
+.ba-circle.r { background: var(--red); }
+.ba-arrow {
+  font-size: 1.4rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.ba-summary {
+  text-align: center;
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--gray);
+}
+.no-change-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 10px;
+  font-size: 0.7rem;
+  color: var(--gray);
+  margin-top: 0.4rem;
+}
+
+/* --- SLIDERS --- */
+.sliders-section {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+.sliders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.slider-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--off-white);
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.slider-group .slider-value {
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 700;
+  float: right;
+}
+.slider-group input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  outline: none;
+  margin-top: 0.3rem;
+}
+.slider-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+.slider-group input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.outputs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.output-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+.output-card .label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+.output-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.output-card .value.positive { color: var(--green); }
+.output-card .value.negative { color: var(--red); }
+.output-card .unit {
+  font-size: 0.7rem;
+  color: var(--gray);
+  display: block;
+  margin-top: 2px;
+}
+
+/* --- COLLAPSIBLE --- */
+.collapsible-section { margin-bottom: 2rem; }
+.collapsible {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+}
+.collapsible-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.collapsible-header:hover { background: rgba(255,255,255,0.03); }
+.collapsible-header .chevron {
+  transition: transform 0.3s;
+  color: var(--gold);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+.collapsible.open .collapsible-header .chevron { transform: rotate(90deg); }
+.collapsible-header .ch-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.collapsible-header .ch-role {
+  font-size: 0.8rem;
+  color: var(--gray);
+  margin-left: auto;
+}
+.collapsible-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.collapsible.open .collapsible-body { max-height: 600px; }
+.collapsible-content {
+  padding: 0 1.25rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.round-summary {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.round-summary h5 {
+  font-size: 0.8rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+.round-summary p {
+  font-size: 0.82rem;
+  color: var(--off-white);
+  line-height: 1.6;
+}
+
+/* --- TENSIONS --- */
+.tensions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.tension-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.tension-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+.tension-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgba(232,185,49,0.15);
+  position: absolute;
+  top: 10px; right: 18px;
+}
+.tension-card h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--gold);
+}
+.tension-card .sides {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+.tension-card .side-a { color: var(--green); font-weight: 600; }
+.tension-card .vs { color: var(--gray); font-style: italic; }
+.tension-card .side-b { color: var(--amber); font-weight: 600; }
+
+/* --- TIMELINE --- */
+.timeline-section {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+}
+.timeline-track {
+  position: relative;
+  min-width: 800px;
+  height: 200px;
+  margin-top: 1rem;
+}
+.timeline-line {
+  position: absolute;
+  top: 90px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+}
+.timeline-months {
+  position: absolute;
+  top: 105px;
+  left: 0;
+  right: 0;
+  display: flex;
+}
+.timeline-months span {
+  flex: 1;
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--gray);
+}
+.tl-block {
+  position: absolute;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+  line-height: 1.3;
+  padding: 0.3rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.tl-block.b {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  left: 0%;
+  width: 25%;
+  top: 20px;
+  height: 55px;
+}
+.tl-block.d-narrow {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+  left: 0%;
+  width: 25%;
+  top: 130px;
+  height: 40px;
+}
+.tl-block.a {
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  left: 25%;
+  width: 42%;
+  top: 20px;
+  height: 55px;
+}
+.tl-block.crm {
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  left: 50%;
+  width: 17%;
+  top: 130px;
+  height: 40px;
+}
+.tl-block.c {
+  background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+  left: 83%;
+  width: 17%;
+  top: 20px;
+  height: 55px;
+  color: var(--white);
+}
+.tl-label-row {
+  position: absolute;
+  top: 170px;
+  left: 0; right: 0;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.tl-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  color: var(--gray);
+}
+.tl-legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* --- FOOTER --- */
+.footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.75rem;
+  color: var(--gray);
+  border-top: 1px solid var(--card-border);
+  margin-top: 2rem;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .container { padding: 1rem; }
+  .advisor-grid { grid-template-columns: 1fr; }
+  .collapsible-content { grid-template-columns: 1fr; }
+  .tensions-grid { grid-template-columns: 1fr; }
+  .vote-change-grid { grid-template-columns: 1fr; }
+  .sliders-grid { grid-template-columns: 1fr; }
+  .outputs-grid { grid-template-columns: repeat(2, 1fr); }
+  .header { padding: 1.5rem 1rem; }
+  .timeline-track { min-width: 700px; }
+}
+
+@media (max-width: 480px) {
+  .outputs-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="header">
+  <div class="header-date">February 12, 2026</div>
+  <h1><span>Lanko</span> Automation Strategy &mdash; Boardroom Decision Dashboard</h1>
+  <p class="header-subtitle">Which automation projects should Lanko prioritize?</p>
+</header>
+
+<div class="container">
+
+<!-- ============ CONSENSUS METER ============ -->
+<h2 class="section-title">Consensus Meter</h2>
+<div class="consensus-section">
+  <div class="consensus-label">Overall Board Agreement</div>
+  <div class="consensus-result">&#9679; Strong Majority</div>
+  <div class="consensus-bar-wrapper">
+    <div class="consensus-bar-item">
+      <label>Project B (ERP/MES) &mdash; Priority #1</label>
+      <div class="bar-track">
+        <div class="bar-fill green" style="width:100%">7 / 7</div>
+      </div>
+    </div>
+    <div class="consensus-bar-item">
+      <label>Project A (AI Quoting) &mdash; Priority #2</label>
+      <div class="bar-track">
+        <div class="bar-fill gold" style="width:85.7%">6 / 7</div>
+      </div>
+    </div>
+    <div class="consensus-bar-item">
+      <label>Project D (Data/Analytics)</label>
+      <div class="bar-track">
+        <div class="bar-fill amber" style="width:57.1%">4 / 7</div>
+      </div>
+    </div>
+    <div class="consensus-bar-item">
+      <label>Project C (Product Configurator)</label>
+      <div class="bar-track">
+        <div class="bar-fill red" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="consensus-details">
+    All 7 advisors agree on <strong>B first</strong>. 6 of 7 place <strong>A second</strong>.
+    Project D gained traction during Round 2 debate. Project C remains conditional/deferred.
+  </div>
+</div>
+
+<!-- ============ ADVISOR CARDS ============ -->
+<h2 class="section-title">Advisory Board &mdash; Votes &amp; Positions</h2>
+<div class="advisor-grid" id="advisorGrid"></div>
+
+<!-- ============ VOTE CHANGE VISUALIZATION ============ -->
+<h2 class="section-title">Vote Shift Visualization &mdash; Round 1 vs Final</h2>
+<div class="vote-change-grid" id="voteChangeGrid"></div>
+
+<!-- ============ INTERACTIVE SLIDERS ============ -->
+<h2 class="section-title">Interactive Financial Projections &mdash; Project A (AI Quoting)</h2>
+<div class="sliders-section">
+  <div class="sliders-grid">
+    <div class="slider-group">
+      <label>Monthly Internet Leads <span class="slider-value" id="val-leads">200</span></label>
+      <input type="range" id="slider-leads" min="50" max="500" value="200" step="10">
+    </div>
+    <div class="slider-group">
+      <label>Current Conversion Rate (%) <span class="slider-value" id="val-conv-current">10</span></label>
+      <input type="range" id="slider-conv-current" min="1" max="20" value="10" step="0.5">
+    </div>
+    <div class="slider-group">
+      <label>Projected Conversion Rate with AI (%) <span class="slider-value" id="val-conv-ai">20</span></label>
+      <input type="range" id="slider-conv-ai" min="10" max="40" value="20" step="0.5">
+    </div>
+    <div class="slider-group">
+      <label>Average Order Value (PLN) <span class="slider-value" id="val-aov">20,000</span></label>
+      <input type="range" id="slider-aov" min="5000" max="50000" value="20000" step="500">
+    </div>
+    <div class="slider-group">
+      <label>Gemini API Cost per Quote (USD) <span class="slider-value" id="val-api">2.00</span></label>
+      <input type="range" id="slider-api" min="0.5" max="5" value="2" step="0.1">
+    </div>
+    <div class="slider-group">
+      <label>Number of Salespeople <span class="slider-value" id="val-people">10</span></label>
+      <input type="range" id="slider-people" min="5" max="30" value="10" step="1">
+    </div>
+    <div class="slider-group">
+      <label>Hours Saved / Salesperson / Week <span class="slider-value" id="val-hours">8</span></label>
+      <input type="range" id="slider-hours" min="2" max="20" value="8" step="1">
+    </div>
+  </div>
+
+  <div class="outputs-grid">
+    <div class="output-card">
+      <div class="label">Current Monthly Revenue</div>
+      <div class="value" id="out-current-rev">400,000</div>
+      <span class="unit">PLN / month</span>
+    </div>
+    <div class="output-card">
+      <div class="label">Projected Monthly Revenue</div>
+      <div class="value" id="out-projected-rev">800,000</div>
+      <span class="unit">PLN / month</span>
+    </div>
+    <div class="output-card">
+      <div class="label">Revenue Uplift / Month</div>
+      <div class="value positive" id="out-uplift-month">400,000</div>
+      <span class="unit">PLN / month</span>
+    </div>
+    <div class="output-card">
+      <div class="label">Revenue Uplift / Year</div>
+      <div class="value positive" id="out-uplift-year">4,800,000</div>
+      <span class="unit">PLN / year</span>
+    </div>
+    <div class="output-card">
+      <div class="label">Monthly API Cost</div>
+      <div class="value negative" id="out-api-cost">1,600</div>
+      <span class="unit">PLN / month</span>
+    </div>
+    <div class="output-card">
+      <div class="label">Annual Net Benefit</div>
+      <div class="value positive" id="out-net-annual">4,780,800</div>
+      <span class="unit">PLN / year</span>
+    </div>
+    <div class="output-card">
+      <div class="label">ROI</div>
+      <div class="value positive" id="out-roi">24,900%</div>
+      <span class="unit">of API cost</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COLLAPSIBLE ADVISOR DETAILS ============ -->
+<h2 class="section-title">Advisor Arguments &mdash; Round 1 &amp; Round 2</h2>
+<div class="collapsible-section" id="collapsibleSection"></div>
+
+<!-- ============ KEY TENSIONS ============ -->
+<h2 class="section-title">Key Tensions</h2>
+<div class="tensions-grid">
+  <div class="tension-card">
+    <div class="tension-number">1</div>
+    <h4>Speed vs. Organizational Readiness</h4>
+    <div class="sides">
+      <span class="side-a">Musk / Huang</span>
+      <span class="vs">vs.</span>
+      <span class="side-b">Barra / Cook</span>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
+      Musk and Huang push for aggressive parallel execution and rapid AI deployment,
+      while Barra and Cook emphasize phased rollouts tied to workforce training and process maturity.
+    </p>
+  </div>
+  <div class="tension-card">
+    <div class="tension-number">2</div>
+    <h4>Product Ambition vs. Operational Focus</h4>
+    <div class="sides">
+      <span class="side-a">Huang / Musk / Benioff</span>
+      <span class="vs">vs.</span>
+      <span class="side-b">Taleb / Cook</span>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
+      The tech visionaries want to leapfrog with AI-native products (configurator, customer-facing AI),
+      while the pragmatists insist on fixing core operations (ERP, data quality) before layering complexity.
+    </p>
+  </div>
+  <div class="tension-card">
+    <div class="tension-number">3</div>
+    <h4>API Dependency vs. Speed to Market</h4>
+    <div class="sides">
+      <span class="side-a">Taleb</span>
+      <span class="vs">vs.</span>
+      <span class="side-b">Rest of Board</span>
+    </div>
+    <p style="margin-top:0.6rem;font-size:0.82rem;color:var(--off-white)">
+      Taleb warns about vendor lock-in and pricing risk with Google Gemini API dependency.
+      The majority accepts the trade-off for speed, with the caveat that modular architecture allows future migration.
+    </p>
+  </div>
+</div>
+
+<!-- ============ TIMELINE ============ -->
+<h2 class="section-title">Recommended Sequence Timeline</h2>
+<div class="timeline-section">
+  <p style="font-size:0.85rem;color:var(--gray);margin-bottom:0.5rem;">Scroll horizontally on smaller screens.</p>
+  <div class="timeline-track">
+    <div class="timeline-line"></div>
+    <div class="timeline-months">
+      <span>M1</span><span>M2</span><span>M3</span><span>M4</span><span>M5</span>
+      <span>M6</span><span>M7</span><span>M8</span><span>M9</span><span>M10</span>
+      <span>M11</span><span>M12</span>
+    </div>
+    <div class="tl-block b">B: ERP/MES<br>Core</div>
+    <div class="tl-block d-narrow">D: Data (narrow)</div>
+    <div class="tl-block a">A: AI Quoting Tool (internal)</div>
+    <div class="tl-block crm">Basic CRM</div>
+    <div class="tl-block c">C: Config<br>(conditional)</div>
+    <div class="tl-label-row">
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#2ecc71"></span> B: ERP/MES</span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#3498db"></span> D: Data/Analytics</span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:var(--gold)"></span> A: AI Quoting</span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#9b59b6"></span> Basic CRM</span>
+      <span class="tl-legend"><span class="tl-legend-dot" style="background:#95a5a6"></span> C: Configurator</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<footer class="footer">
+  Lanko Automation Strategy &mdash; Boardroom Simulation &mdash; Generated February 12, 2026
+</footer>
+
+<script>
+// ============================
+// ADVISOR DATA
+// ============================
+const advisors = [
+  {
+    name: "Tim Cook",
+    initials: "TC",
+    org: "Apple CEO",
+    role: "Operations Expert",
+    personality: "Methodical operator; supply-chain discipline above all.",
+    color: "#5B7FFF",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "cond" },
+      { proj: "D", vote: "cond" },
+      { proj: "C", vote: "no" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond" },
+      { proj: "C", vote: "cond" }
+    ],
+    mindChanged: "Moved D earlier; embedded CRM into B scope.",
+    isBigShift: false,
+    confFrom: "High", confTo: "High", confDir: "same",
+    r1Summary: "Cook argued B (ERP/MES) must come first as the operational backbone. Without reliable data plumbing, AI tools will produce garbage. He was cautious on A, wanting to see ERP deliver clean data before layering AI quoting on top.",
+    r2Summary: "Accepted D should start in parallel with B to begin data cleanup immediately. Proposed embedding basic CRM functionality inside the ERP rollout rather than treating it as a separate project. Remained cautious on C."
+  },
+  {
+    name: "Marc Benioff",
+    initials: "MB",
+    org: "Salesforce",
+    role: "SaaS Pioneer",
+    color: "#00A1E0",
+    personality: "Customer-centric SaaS evangelist; CRM is oxygen.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "C", vote: "cond" },
+      { proj: "D", vote: "cond" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "D", vote: "special", label: "BG" },
+      { proj: "C", vote: "cond" }
+    ],
+    mindChanged: "B now clear #1 (was tied with A). D as background task.",
+    isBigShift: false,
+    confFrom: "High", confTo: "82%", confDir: "down",
+    r1Summary: "Benioff championed A and B equally, arguing that AI-powered quoting would be a competitive differentiator for Lanko's internet sales channel. He pushed for CRM integration early, seeing it as the connective tissue between sales and operations.",
+    r2Summary: "After hearing Cook and Barra, conceded B should clearly lead. Still passionate about A as close second. Accepted D as a background workstream. Slightly less confident as execution complexity became clearer."
+  },
+  {
+    name: "Elon Musk",
+    initials: "EM",
+    org: "Tesla",
+    role: "Radical Thinker",
+    color: "#E82127",
+    personality: "Move fast, break things, then fix them at 2AM.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "D", vote: "cond" },
+      { proj: "C", vote: "cond" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "D", vote: "special", label: "||" },
+      { proj: "C", vote: "special", label: "LAST" }
+    ],
+    mindChanged: "Moved D data work earlier; run parallel with B.",
+    isBigShift: false,
+    confFrom: "High", confTo: "85%", confDir: "down",
+    r1Summary: "Musk pushed for maximum parallelism: launch B and A simultaneously, iterate fast, and don't wait for perfection. He dismissed C as a nice-to-have and suggested D was already implicit in doing B properly. Speed of execution was his top priority.",
+    r2Summary: "Accepted the board's phased approach but insisted D should run in parallel with B from day one. Pushed C to absolute last position. Acknowledged that Lanko's small team can't match Tesla's engineering bench, hence slight confidence drop."
+  },
+  {
+    name: "Mary Barra",
+    initials: "MBa",
+    org: "GM",
+    role: "Manufacturing Operator",
+    color: "#0170CE",
+    personality: "Factory-floor pragmatist; people and process before tech.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond" },
+      { proj: "C", vote: "cond" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond", label: "PULL" },
+      { proj: "C", vote: "cond" }
+    ],
+    mindChanged: "A pulled forward from months 6-10 to months 4-8.",
+    isBigShift: false,
+    confFrom: "High", confTo: "Medium-High", confDir: "down",
+    r1Summary: "Barra emphasized that manufacturing transformation requires workforce buy-in. She ranked D highly because data visibility is the foundation for every other project. She worried A would distract from the core ERP rollout if started too early.",
+    r2Summary: "Influenced by Ng and Benioff, agreed to pull A's timeline forward by two months. Still insisted on a conditional gate: A only proceeds if B's initial modules are stable. Confidence dipped slightly due to concerns about change management capacity."
+  },
+  {
+    name: "Andrew Ng",
+    initials: "AN",
+    org: "Landing AI",
+    role: "AI Expert",
+    color: "#FF6B35",
+    personality: "Data-first AI practitioner; systematic and evidence-driven.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond" },
+      { proj: "C", vote: "cond", label: "C-NO" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "C", vote: "cond" }
+    ],
+    mindChanged: "A upgraded from conditional to YES.",
+    isBigShift: false,
+    confFrom: "High", confTo: "Medium-High", confDir: "down",
+    r1Summary: "Ng advocated for a data-first strategy: B and D create the foundation, then A can leverage clean data for accurate AI quoting. He was skeptical of C, noting that product configurators require extensive training data that Lanko doesn't yet have.",
+    r2Summary: "After Benioff presented the revenue uplift math for A, Ng upgraded his vote to YES. He outlined a specific technical approach: use Gemini API with Lanko's pricing rules as structured context. Kept C as conditional pending data maturity."
+  },
+  {
+    name: "Nassim Taleb",
+    initials: "NT",
+    org: "Author / Scholar",
+    role: "Risk Skeptic",
+    color: "#8B4513",
+    personality: "Anti-fragility advocate; hates hidden risks and vendor lock-in.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond", label: "PILOT" },
+      { proj: "C", vote: "no" }
+    ],
+    final: [
+      { proj: "B", vote: "yes" },
+      { proj: "D", vote: "yes" },
+      { proj: "A", vote: "cond", label: "PROD!" },
+      { proj: "C", vote: "no" }
+    ],
+    mindChanged: "BIGGEST SHIFT: A went from \"small experiment\" to \"budget-capped production deployment.\"",
+    isBigShift: true,
+    confFrom: "70%", confTo: "78%", confDir: "up",
+    r1Summary: "Taleb warned against API dependency on Google Gemini, citing pricing risk and vendor lock-in. He wanted A as a tiny, contained experiment only. He vetoed C outright as premature complexity. His focus was on B and D as robust, controllable investments.",
+    r2Summary: "In the biggest shift of the session, Taleb moved A from 'small experiment' to 'budget-capped production deployment' after Ng demonstrated that modular API architecture allows provider switching. Still insists on a hard monthly cost ceiling and kill switch."
+  },
+  {
+    name: "Jensen Huang",
+    initials: "JH",
+    org: "NVIDIA",
+    role: "Tech Strategist",
+    color: "#76B900",
+    personality: "AI-maximalist; sees compute as the answer to everything.",
+    r1: [
+      { proj: "B", vote: "yes" },
+      { proj: "A", vote: "yes" },
+      { proj: "C", vote: "cond" },
+      { proj: "D", vote: "cond" }
+    ],
+    final: [
+      { proj: "B", vote: "special", label: "B+D||" },
+      { proj: "A", vote: "yes", label: "#2" },
+      { proj: "D", vote: "special", label: "||B" },
+      { proj: "C", vote: "special", label: "DEFER" }
+    ],
+    mindChanged: "Accepted execution risk; added D parallel with B.",
+    isBigShift: false,
+    confFrom: "85%", confTo: "75%", confDir: "down",
+    r1Summary: "Huang argued for an AI-first strategy: A and B simultaneously, with C as the ultimate revenue unlock. He envisioned Lanko using AI not just for quoting but as a full customer-facing product configurator. D was an afterthought in his original view.",
+    r2Summary: "Barra and Cook convinced him that D needs to run alongside B for data quality. Deferred C entirely. His confidence dropped as he recognized Lanko's team size limits parallel execution. Still sees A as transformative and ranks it firmly #2."
+  }
+];
+
+// ============================
+// RENDER ADVISOR CARDS
+// ============================
+function renderAdvisorCards() {
+  const grid = document.getElementById('advisorGrid');
+  grid.innerHTML = advisors.map(a => {
+    const r1Badges = a.r1.map(v => {
+      const cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
+      const txt = v.label || v.vote.toUpperCase();
+      return `<span class="badge ${cls}">${v.proj}: ${txt}</span>`;
+    }).join('');
+
+    const finalBadges = a.final.map(v => {
+      const cls = v.vote === 'yes' ? 'yes' : v.vote === 'cond' ? 'cond' : v.vote === 'no' ? 'no' : 'special';
+      const txt = v.label || v.vote.toUpperCase();
+      return `<span class="badge ${cls}">${v.proj}: ${txt}</span>`;
+    }).join('');
+
+    const shiftClass = a.isBigShift ? 'biggest-shift' : '';
+
+    return `
+    <div class="advisor-card" style="border-top:3px solid ${a.color}">
+      <div class="advisor-top">
+        <div class="avatar" style="background:${a.color}">${a.initials}</div>
+        <div class="advisor-info">
+          <h3>${a.name}</h3>
+          <div class="role">${a.org} &mdash; ${a.role}</div>
+          <div class="personality">${a.personality}</div>
+        </div>
+      </div>
+      <div class="vote-section">
+        <div class="vote-section-label">Round 1 Votes</div>
+        <div class="vote-badges">${r1Badges}</div>
+        <div class="vote-section-label">Final Votes</div>
+        <div class="vote-badges">${finalBadges}</div>
+      </div>
+      <div class="mind-changed ${shiftClass}">
+        <span class="arrow">&#8594;</span>
+        <span>${a.isBigShift ? '<strong>BIGGEST SHIFT:</strong> ' : ''}${a.mindChanged}</span>
+      </div>
+      <div class="confidence-row">
+        <span class="conf-dot ${a.confDir}"></span>
+        Confidence: ${a.confFrom} &rarr; ${a.confTo}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================
+// RENDER VOTE CHANGE CARDS
+// ============================
+function renderVoteChanges() {
+  const projects = [
+    {
+      name: "Project B", label: "ERP / MES Integration",
+      before: { yes: 7, cond: 0, no: 0 },
+      after: { yes: 7, cond: 0, no: 0 },
+      summary: "Unanimous. No change.",
+      changed: false
+    },
+    {
+      name: "Project A", label: "AI-Powered Quoting Tool",
+      before: { yes: 3, cond: 4, no: 0 },
+      after: { yes: 4, cond: 3, no: 0 },
+      summary: "Taleb shifted to production; Ng upgraded to YES.",
+      changed: true
+    },
+    {
+      name: "Project C", label: "Product Configurator",
+      before: { yes: 0, cond: 5, no: 2 },
+      after: { yes: 0, cond: 5, no: 2 },
+      summary: "No change. Remains deferred.",
+      changed: false
+    },
+    {
+      name: "Project D", label: "Data / Analytics Foundation",
+      before: { yes: 2, cond: 5, no: 0 },
+      after: { yes: 4, cond: 3, no: 0 },
+      summary: "Cook and Huang shifted D to YES.",
+      changed: true
+    }
+  ];
+
+  const grid = document.getElementById('voteChangeGrid');
+  grid.innerHTML = projects.map(p => {
+    function circles(data) {
+      let out = '';
+      for (let i = 0; i < data.yes; i++) out += '<span class="ba-circle g"></span>';
+      for (let i = 0; i < data.cond; i++) out += '<span class="ba-circle a"></span>';
+      for (let i = 0; i < data.no; i++) out += '<span class="ba-circle r"></span>';
+      return out;
+    }
+    return `
+    <div class="vote-change-card">
+      <h4><span>${p.name}</span> &mdash; ${p.label}</h4>
+      <div class="before-after">
+        <div class="ba-col">
+          <div class="ba-label">Round 1</div>
+          <div class="ba-circles">${circles(p.before)}</div>
+        </div>
+        <div class="ba-arrow">&#10132;</div>
+        <div class="ba-col">
+          <div class="ba-label">Final</div>
+          <div class="ba-circles">${circles(p.after)}</div>
+        </div>
+      </div>
+      <div class="ba-summary">
+        ${p.summary}
+        ${!p.changed ? '<span class="no-change-badge">No shift</span>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================
+// RENDER COLLAPSIBLE SECTIONS
+// ============================
+function renderCollapsibles() {
+  const section = document.getElementById('collapsibleSection');
+  section.innerHTML = advisors.map((a, i) => `
+    <div class="collapsible" id="coll-${i}">
+      <div class="collapsible-header" onclick="toggleCollapsible(${i})">
+        <span class="chevron">&#9654;</span>
+        <span class="ch-name">${a.name}</span>
+        <span class="ch-role">${a.org} &mdash; ${a.role}</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="collapsible-content">
+          <div class="round-summary">
+            <h5>Round 1 Argument</h5>
+            <p>${a.r1Summary}</p>
+          </div>
+          <div class="round-summary">
+            <h5>Round 2 Rebuttal</h5>
+            <p>${a.r2Summary}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleCollapsible(idx) {
+  const el = document.getElementById('coll-' + idx);
+  el.classList.toggle('open');
+}
+
+// ============================
+// INTERACTIVE SLIDERS
+// ============================
+const sliderIds = [
+  'slider-leads', 'slider-conv-current', 'slider-conv-ai',
+  'slider-aov', 'slider-api', 'slider-people', 'slider-hours'
+];
+
+function formatNum(n) {
+  return Math.round(n).toLocaleString('en-US');
+}
+
+function recalculate() {
+  const leads = parseFloat(document.getElementById('slider-leads').value);
+  const convCurrent = parseFloat(document.getElementById('slider-conv-current').value) / 100;
+  const convAI = parseFloat(document.getElementById('slider-conv-ai').value) / 100;
+  const aov = parseFloat(document.getElementById('slider-aov').value);
+  const apiCostUSD = parseFloat(document.getElementById('slider-api').value);
+  const people = parseFloat(document.getElementById('slider-people').value);
+  const hours = parseFloat(document.getElementById('slider-hours').value);
+
+  // Update displayed values
+  document.getElementById('val-leads').textContent = leads;
+  document.getElementById('val-conv-current').textContent = (convCurrent * 100).toFixed(1);
+  document.getElementById('val-conv-ai').textContent = (convAI * 100).toFixed(1);
+  document.getElementById('val-aov').textContent = formatNum(aov);
+  document.getElementById('val-api').textContent = apiCostUSD.toFixed(2);
+  document.getElementById('val-people').textContent = people;
+  document.getElementById('val-hours').textContent = hours;
+
+  // Calculations
+  const currentMonthly = leads * convCurrent * aov;
+  const projectedMonthly = leads * convAI * aov;
+  const upliftMonth = projectedMonthly - currentMonthly;
+  const upliftYear = upliftMonth * 12;
+  const monthlyApiCost = leads * apiCostUSD * 4; // 4 PLN per USD
+  const annualApiCost = monthlyApiCost * 12;
+  const annualNet = upliftYear - annualApiCost;
+  const roi = annualApiCost > 0 ? (annualNet / annualApiCost) * 100 : 0;
+
+  // Update outputs
+  document.getElementById('out-current-rev').textContent = formatNum(currentMonthly);
+  document.getElementById('out-projected-rev').textContent = formatNum(projectedMonthly);
+  document.getElementById('out-uplift-month').textContent = formatNum(upliftMonth);
+  document.getElementById('out-uplift-year').textContent = formatNum(upliftYear);
+  document.getElementById('out-api-cost').textContent = formatNum(monthlyApiCost);
+  document.getElementById('out-net-annual').textContent = formatNum(annualNet);
+  document.getElementById('out-roi').textContent = formatNum(roi) + '%';
+
+  // Color logic for net benefit
+  const netEl = document.getElementById('out-net-annual');
+  const roiEl = document.getElementById('out-roi');
+  if (annualNet >= 0) {
+    netEl.className = 'value positive';
+    roiEl.className = 'value positive';
+  } else {
+    netEl.className = 'value negative';
+    roiEl.className = 'value negative';
+  }
+}
+
+sliderIds.forEach(id => {
+  document.getElementById(id).addEventListener('input', recalculate);
+});
+
+// ============================
+// INIT
+// ============================
+renderAdvisorCards();
+renderVoteChanges();
+renderCollapsibles();
+recalculate();
+</script>
+</body>
+</html>
